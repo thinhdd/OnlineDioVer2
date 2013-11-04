@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/Lavender">
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <Button
+                android:id="@+id/inputcommment_btMenuBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/menubar"/>
+        <Button
+                android:id="@+id/inputcommnet_btBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/phone_margin_component"
+                android:background="@drawable/back"/>
+        <Button
+                android:id="@+id/inputcommnet_btDone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/phone_margin_component"
+                android:background="@drawable/done_visible"/>
+    </RelativeLayout>
+
+    <EditText
+            android:id="@+id/inputcomment_etInputComment"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/phone_haft_of_height"
+            android:layout_margin="@dimen/phone_margin_component"
+            android:gravity="left|top"
+            android:inputType="text"/>
+</LinearLayout>

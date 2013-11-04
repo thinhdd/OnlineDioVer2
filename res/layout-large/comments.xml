@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/White">
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/tablet_margin_component"
+            android:layout_marginBottom="@dimen/tablet_zero">
+        <ImageView
+                android:id="@+id/comments_ivAvatarInput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/tablet_margin_component"
+                android:background="@drawable/comment_avatar"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/imageview_description"/>
+        <TextView
+                android:id="@+id/comments_tvInputComment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/comments_hint"
+                android:textSize="@dimen/tablet_text_info_comment_size"
+                android:paddingLeft="@dimen/tablet_slidebar_tittle_songname_text_size"
+                android:gravity="center_vertical"
+                android:background="@drawable/comment_input"
+                android:layout_gravity="center_vertical"
+                />
+    </LinearLayout>
+
+    <ListView
+            android:id="@+id/comment_lvListComment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/tablet_margin_component"/>
+</LinearLayout>
+

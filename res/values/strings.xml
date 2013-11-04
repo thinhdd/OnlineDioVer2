@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OnlineDio</string>
+    <string name="welcome">WELCOME, ONLINE - DIO</string>
+    <string name="footer">By joining OnlineDio you agree to the
+        <b>Terms of Service\n</b>
+        and
+        <b>Privacy Policy</b>
+    </string>
+    <string name="home_tvHomeTitle">Home</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">
+        <u>I forgot my password</u>
+    </string>
+    <string name="email_hint">Your email address</string>
+    <string name="password_hint">*******</string>
+    <string name="header">ONE PICTURE SAYS A THOUSAND WORD\n
+        <b>WHAT IF ONE CLIP CAN SAY YOU</b>
+    </string>
+    <string name="tittle_login_error">Error Signing In</string>
+    <string name="incorrect_email_or_password">Email address or password is incorrect.</string>
+    <string name="error_connect_network">There is no connection to the internet.</string>
+    <string name="connection_timeout">Connection time out, please try again.</string>
+    <string name="service_unrecognized">There is a problem with OnlineDio server, please try again later.</string>
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
+    <string name="signup">Sing Up</string>
+    <string name="hint_search">Search</string>
+    <string name="profile">Profile</string>
+    <string name="profile_tittle">Profile Setup</string>
+    <string name="profile_display_name">Display name</string>
+    <string name="account_infor">Account Information</string>
+    <string name="profile_fullname">Full name</string>
+    <string name="profile_phoneno">Phone no.</string>
+    <string name="profile_birthday">Birthday</string>
+    <string name="profile_gender">Gender</string>
+    <string name="profile_country">Country</string>
+    <string name="description">Description</string>
+    <string name="description_hint">Your profile description</string>
+    <string name="profile_name_hint">Your display name</string>
+    <string name="full_name_hint">Your full name</string>
+    <string name="phone_no_hint">Your phone no.</string>
+    <string name="birthday_hint">Your birthday</string>
+    <string name="country_hint">Your country</string>
+    <string name="sound_art">Dimonds speaker</string>
+    <string name="sound">Mưa Trên Phố Bay</string>
+    <string name="home_tittle_comment">comment : good</string>
+    <string name="home_tittle_show">show</string>
+    <string name="home_tittle_song">Song name</string>
+    <string name="home_tittle_singer">singer</string>
+    <string name="home_tittle_like">like:100</string>
+    <string name="slidebar_tittle_item">Item</string>
+    <string name="name_song">My Station</string>
+    <string name="name_singer">elizabet</string>
+    <string name="take_picture">Take Picture</string>
+    <string name="choose_picture">Choose Picture</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_tittle_avatar">"How would you like to set your picture?"</string>
+    <string name="dialog_tittle_coverimage">"How would you like to set your cover?"</string>
+
+    <string name="program_thumbnail">Thumbnail</string>
+    <string name="program_detail">Detail</string>
+    <string name="program_comments">Comments</string>
+    <string name="detail_infomation_art">Hoà trong cơn gió đông bay qua thời gian, Từng đôi chân lãng du bước trên đường
+        khuya. Hạt mưa rơi lung linh như hạt ngọc đêm thâu, Bao giấc mơ tan thành sương hoa, Để giờ đây chơi vơi bóng
+        hình một loài hoa tháng năm.
+    </string>
+    <string name="comments_hint">Add a comment</string>
+    <string name="comment_form">Chỉ anh với mỗi anh cô đơn lạnh gió Mình anh với nỗi đau khi em lìa xa. Một mình anh cô
+        đơn,đếm từng giọt sao rơi.
+    </string>
+    <string name="comment_time">1 phút trước</string>
+    <string name="program_numberOfCare">189</string>
+    <string name="timeRun">1:32</string>
+    <string name="timeTotal">3:32</string>
+    <string name="program_title">Program</string>
+    <string name="imageview_description">ImageView Description</string>
+    <string name="provider_name">Home Show</string>
+
+    <string-array name="countries">
+        <item>English</item>
+        <item>USA</item>
+        <item>Viet Nam</item>
+        <item>New Zeland</item>
+        <item>China</item>
+        <item>Japan</item>
+    </string-array>
+
+    <string-array name="nav_classes">
+        <item>Home</item>
+        <item>Favorite</item>
+        <item>Following</item>
+        <item>Audience</item>
+        <item>Genres</item>
+        <item>Setting</item>
+        <item>Help Center</item>
+        <item>Sign Out</item>
+    </string-array>
+
+</resources>

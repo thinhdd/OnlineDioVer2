@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/launch_rlBackground"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/launch_background"
+        >
+    <TextView
+            android:id="@+id/tvHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/header"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/phone_margin"
+            android:gravity="center"
+            android:textColor="@color/login_text_color"
+            android:textSize="@dimen/phone_text_header_size"
+            />
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ivLogo"
+            android:src="@drawable/launch_logo"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/imageview_description"/>
+    <TextView
+            android:id="@+id/tvFooter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/footer"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/phone_margin"
+            android:gravity="center"
+            android:textColor="@color/login_text_color"
+            android:textSize="@dimen/phone_text_footer_size"
+            />
+    <Button
+            android:id="@+id/btLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/launch_login"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@id/tvFooter"
+            android:layout_marginBottom="@dimen/phone_margin"/>
+    <Button
+            android:id="@+id/btSignUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/launch_signup"
+            android:layout_toRightOf="@id/btLogin" android:layout_marginLeft="@dimen/phone_margin"
+            android:layout_above="@id/tvFooter" android:layout_marginBottom="@dimen/phone_margin"/>
+    <Button
+            android:id="@+id/btLoginFb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/launch_login_fb"
+            android:layout_toLeftOf="@id/btLogin" android:layout_marginRight="@dimen/phone_margin"
+            android:layout_above="@id/tvFooter" android:layout_marginBottom="@dimen/phone_margin"/>
+</RelativeLayout>
+
