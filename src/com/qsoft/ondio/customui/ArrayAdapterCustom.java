@@ -1,17 +1,17 @@
 package com.qsoft.ondio.customui;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.qsoft.ondio.R;
-import com.qsoft.ondio.model.Home;
+import com.qsoft.ondio.data.dao.HomeContract;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -22,44 +22,64 @@ import java.util.Date;
  * Time: 11:08 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ArrayAdapterCustom extends ArrayAdapter<Home>
+public class ArrayAdapterCustom extends SimpleCursorAdapter
 {
     private TextView home_tvFeed;
     private TextView home_tvUserName;
     private TextView home_tvLike;
     private TextView home_tvComment;
     private TextView home_tvDays;
-    private final ArrayList<Home> homes;
-    private final Context context;
 
-    public ArrayAdapterCustom(Context context, int textViewResourceId, ArrayList<Home> homes)
+    private int layout;
+    private final LayoutInflater inflater;
+
+    public ArrayAdapterCustom(Context context, int layout, Cursor c, String[] from, int[] to)
     {
-        super(context, textViewResourceId, homes);
-        this.homes = homes;
-        this.context = context;
+        super(context, layout, c, from, to);
+        this.layout = layout;
+        this.inflater = LayoutInflater.from(context);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
+    public void bindView(View view, Context context, Cursor cursor)
     {
-        View v = convertView;
-        if (v == null)
-        {
-            LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = vi.inflate(R.layout.home_listfeeds, null);
-        }
-        Home home = homes.get(position);
-        setUpViewFindByID(v);
-        if (home != null)
-        {
-            home_tvFeed.setText(home.title);
-            home_tvUserName.setText(home.username);
-            home_tvLike.setText("Likes " + home.likes);
-            home_tvComment.setText("Comments " + home.comments);
-            home_tvDays.setText(numberOfDay(home.updated_at) + "");
-        }
-        return v;
+        super.bindView(view, context, cursor);
+        setUpViewFindByID(view);
+        home_tvFeed.setText(cursor.getString(cursor.getColumnIndex(HomeContract.TITLE)));
+        home_tvUserName.setText(cursor.getString(cursor.getColumnIndex(HomeContract.DISPLAY_NAME)));
+        home_tvLike.setText("likes " + cursor.getString(cursor.getColumnIndex(HomeContract.LIKES)));
+        home_tvComment.setText("comments " + cursor.getString(cursor.getColumnIndex(HomeContract.COMMENTS)));
+        long day = numberOfDay(cursor.getString(cursor.getColumnIndex(HomeContract.UPDATED_AT)));
+        home_tvDays.setText("day " + day);
     }
+
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent)
+    {
+        return inflater.inflate(layout, null);
+    }
+
+//    @Override
+//    public View getView(int position, View convertView, ViewGroup parent)
+//    {
+//        View v = convertView;
+//        if (v == null)
+//        {
+//            LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//            v = vi.inflate(R.layout.home_listfeeds, null);
+//        }
+//        Home home = homes.get(position);
+//        setUpViewFindByID(v);
+//        if (home != null)
+//        {
+//            home_tvFeed.setText(home.title);
+//            home_tvUserName.setText(home.username);
+//            home_tvLike.setText("Likes " + home.likes);
+//            home_tvComment.setText("Comments " + home.comments);
+//            home_tvDays.setText(numberOfDay(home.updated_at) + "");
+//        }
+//        return v;
+//    }
 
     private void setUpViewFindByID(View v)
     {

@@ -18,7 +18,7 @@ public class ParseComServer implements ServerAuthenticate
     public User userSignIn(String username, String pass, String authType) throws Exception
     {
 
-        String url = "http://113.160.50.84:1009/testing/ica467/trunk/public/auth-rest";
+        String url = "http://192.168.1.222/testing/ica467/trunk/public/auth-rest";
         DefaultHttpClient httpClient = new DefaultHttpClient();
         pass = new HashStringToMD5().doConvert(pass);
 

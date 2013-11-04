@@ -111,8 +111,6 @@ public class MainActivity extends Activity
 
                                 ContentResolver.setIsSyncable(mConnectedAccount, Common.CONTENT_AUTHORITY, 1);
                                 ContentResolver.setSyncAutomatically(mConnectedAccount, Common.CONTENT_AUTHORITY, true);
-                                ContentResolver.addPeriodicSync(
-                                        mConnectedAccount, Common.CONTENT_AUTHORITY, new Bundle(), 60 * 60);
                             }
                         }
                         catch (Exception e)

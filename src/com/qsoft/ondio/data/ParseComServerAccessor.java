@@ -26,7 +26,7 @@ public class ParseComServerAccessor
     {
         ArrayList<Home> homes = new ArrayList<Home>();
         DefaultHttpClient httpClient = new DefaultHttpClient();
-        String url = "http://113.160.50.84:1009/testing/ica467/trunk/public/home-rest";
+        String url = "http://192.168.1.222/testing/ica467/trunk/public/home-rest";
         HttpGet httpGet = new HttpGet(url);
         httpGet.addHeader("Authorization", "Bearer " + token);
         try

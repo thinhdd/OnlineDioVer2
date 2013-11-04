@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.text.TextUtils;
 import com.qsoft.ondio.data.HomeHelper;
 
 public class HomeContentProvider extends ContentProvider
@@ -54,7 +55,9 @@ public class HomeContentProvider extends ContentProvider
                 SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
                 builder.setTables(HomeHelper.HOME_TABLE_NAME);
                 builder.appendWhere(HomeContract._ID + "=" + homeSoundID);
-                return builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+                Cursor cursor = builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor.setNotificationUri(getContext().getContentResolver(), uri);
+                return cursor;
             }
             default:
                 return null;
@@ -97,17 +100,41 @@ public class HomeContentProvider extends ContentProvider
                 throw new UnsupportedOperationException("URI: " + uri + " not supported.");
             }
         }
+
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs)
     {
-        return 0;
+        return 1;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs)
     {
-        return 0;
+        SQLiteDatabase sqlDB = homeHelper.getWritableDatabase();
+        int rowsUpdated = 0;
+
+        String id = uri.getLastPathSegment();
+        if (TextUtils.isEmpty(selection))
+        {
+            rowsUpdated =
+                    sqlDB.update(HomeHelper.HOME_TABLE_NAME,
+                            values,
+                            HomeContract._ID + "=" + id,
+                            null);
+        }
+        else
+        {
+            rowsUpdated =
+                    sqlDB.update(HomeHelper.HOME_TABLE_NAME,
+                            values,
+                            HomeContract._ID + "=" + id
+                                    + " and "
+                                    + selection,
+                            selectionArgs);
+        }
+        getContext().getContentResolver().notifyChange(uri, null, false);
+        return rowsUpdated;
     }
 }
