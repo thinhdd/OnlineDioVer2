@@ -7,7 +7,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
+import android.view.View;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.customui.ArrayAdapterCustom;
 import com.qsoft.ondio.data.dao.HomeContract;
@@ -19,7 +19,8 @@ import com.qsoft.ondio.data.dao.HomeContract;
  * Time: 11:28 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HomeListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class HomeListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>
+{
 
     private static final String[] PROJECTION = new String[]{
             HomeContract._ID,
@@ -48,7 +49,8 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
     private String TAG = "HomeListFragment";
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
         super.onActivityCreated(savedInstanceState);
 
         setEmptyText("No data");
@@ -61,26 +63,43 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
                 FROM_COLUMNS,
                 TO_FIELDS
         );
+        mAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder()
+        {
+
+            @Override
+            public boolean setViewValue(View view, Cursor cursor, int i)
+            {
+                return false;
+            }
+        });
 
         setListAdapter(mAdapter);
-        setListShown(false);
         getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    public void onResume()
+    {
+        super.onResume();
+        getLoaderManager().restartLoader(0, null, this);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args)
+    {
         return new CursorLoader(getActivity(), HomeContract.CONTENT_URI,
                 PROJECTION, null, null, null);
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data)
+    {
         mAdapter.swapCursor(data);
-        setListShown(true);
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(Loader<Cursor> loader)
+    {
         mAdapter.swapCursor(null);
     }
 }

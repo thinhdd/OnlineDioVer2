@@ -6,24 +6,31 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
-import com.qsoft.ondio.data.HomeHelper;
+import com.qsoft.ondio.data.DatabaseHelper;
 
 public class HomeContentProvider extends ContentProvider
 {
 
     public static final UriMatcher URI_MATCHER = buildUriMatcher();
-    public static final String PATH = "home";
-    public static final int PATH_TOKEN = 100;
-    public static final String PATH_FOR_ID = "home/#";
-    public static final int PATH_FOR_ID_TOKEN = 200;
-    private HomeHelper homeHelper;
+    public static final String PATH_HOMES = "home";
+    public static final String PATH_PROFILES = "profile";
+    public static final int HOMES = 100;
+    public static final int PROFILES = 101;
+    public static final String PATH_HOME_ID = "home/#";
+    public static final String PATH_PROFILE_ID = "profile/#";
+    public static final int HOME_ID = 200;
+    public static final int PROFILE_ID = 201;
+
+    private DatabaseHelper dbHelper;
 
     private static UriMatcher buildUriMatcher()
     {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = HomeContract.AUTHORITY;
-        matcher.addURI(authority, PATH, PATH_TOKEN);
-        matcher.addURI(authority, PATH_FOR_ID, PATH_FOR_ID_TOKEN);
+        matcher.addURI(authority, PATH_HOMES, HOMES);
+        matcher.addURI(authority, PATH_HOME_ID, HOME_ID);
+        matcher.addURI(authority, PATH_PROFILES, PROFILES);
+        matcher.addURI(authority, PATH_PROFILE_ID, PROFILE_ID);
         return matcher;
     }
 
@@ -31,32 +38,50 @@ public class HomeContentProvider extends ContentProvider
     public boolean onCreate()
     {
         Context ctx = getContext();
-        homeHelper = new HomeHelper(ctx);
+        dbHelper = new DatabaseHelper(ctx);
         return true;
     }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)
     {
-        SQLiteDatabase db = homeHelper.getReadableDatabase();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
         final int match = URI_MATCHER.match(uri);
         switch (match)
         {
             // retrieve tv shows list
-            case PATH_TOKEN:
+            case HOMES:
             {
                 SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
-                builder.setTables(HomeHelper.HOME_TABLE_NAME);
+                builder.setTables(DatabaseHelper.HOME_TABLE_NAME);
+                Cursor cursor = builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor.setNotificationUri(getContext().getContentResolver(), HomeContract.CONTENT_URI);
                 return builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
             }
-            case PATH_FOR_ID_TOKEN:
+            case HOME_ID:
             {
                 int homeSoundID = (int) ContentUris.parseId(uri);
                 SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
-                builder.setTables(HomeHelper.HOME_TABLE_NAME);
+                builder.setTables(DatabaseHelper.HOME_TABLE_NAME);
                 builder.appendWhere(HomeContract._ID + "=" + homeSoundID);
                 Cursor cursor = builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
                 cursor.setNotificationUri(getContext().getContentResolver(), HomeContract.CONTENT_URI);
+                return cursor;
+            }
+            case PROFILES:
+            {
+                SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+                builder.setTables(DatabaseHelper.PROFILE_TABLE_NAME);
+                return builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+            }
+            case PROFILE_ID:
+            {
+                int profileID = (int) ContentUris.parseId(uri);
+                SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+                builder.setTables(DatabaseHelper.PROFILE_TABLE_NAME);
+                builder.appendWhere(ProfileContract._ID + "=" + profileID);
+                Cursor cursor = builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor.setNotificationUri(getContext().getContentResolver(), ProfileContract.CONTENT_URI);
                 return cursor;
             }
             default:
@@ -70,10 +95,14 @@ public class HomeContentProvider extends ContentProvider
         final int match = URI_MATCHER.match(uri);
         switch (match)
         {
-            case PATH_TOKEN:
+            case HOMES:
                 return HomeContract.CONTENT_TYPE_DIR;
-            case PATH_FOR_ID_TOKEN:
+            case HOME_ID:
                 return HomeContract.CONTENT_ITEM_TYPE;
+            case PROFILES:
+                return ProfileContract.CONTENT_TYPE_DIR;
+            case PROFILE_ID:
+                return ProfileContract.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("URI " + uri + " is not supported.");
         }
@@ -82,18 +111,27 @@ public class HomeContentProvider extends ContentProvider
     @Override
     public Uri insert(Uri uri, ContentValues values)
     {
-        SQLiteDatabase db = homeHelper.getWritableDatabase();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
         int token = URI_MATCHER.match(uri);
         switch (token)
         {
-            case PATH_TOKEN:
+            case HOMES:
             {
-                long id = db.insert(HomeHelper.HOME_TABLE_NAME, null, values);
+                long id = db.insert(DatabaseHelper.HOME_TABLE_NAME, null, values);
                 if (id != -1)
                 {
                     getContext().getContentResolver().notifyChange(uri, null);
                 }
                 return HomeContract.CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
+            }
+            case PROFILES:
+            {
+                long id = db.insert(DatabaseHelper.PROFILE_TABLE_NAME, null, values);
+                if (id != -1)
+                {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+                return ProfileContract.CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
             }
             default:
             {
@@ -112,29 +150,55 @@ public class HomeContentProvider extends ContentProvider
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs)
     {
-        SQLiteDatabase sqlDB = homeHelper.getWritableDatabase();
+        SQLiteDatabase sqlDB = dbHelper.getWritableDatabase();
         int rowsUpdated = 0;
 
         String id = uri.getLastPathSegment();
-        if (TextUtils.isEmpty(selection))
+        int token = URI_MATCHER.match(uri);
+        switch (token)
         {
-            rowsUpdated =
-                    sqlDB.update(HomeHelper.HOME_TABLE_NAME,
-                            values,
-                            HomeContract._ID + "=" + id,
-                            null);
+            case HOME_ID:
+                if (TextUtils.isEmpty(selection))
+                {
+                    rowsUpdated =
+                            sqlDB.update(DatabaseHelper.HOME_TABLE_NAME,
+                                    values,
+                                    HomeContract._ID + "=" + id,
+                                    null);
+                }
+                else
+                {
+                    rowsUpdated =
+                            sqlDB.update(DatabaseHelper.HOME_TABLE_NAME,
+                                    values,
+                                    HomeContract._ID + "=" + id
+                                            + " and "
+                                            + selection,
+                                    selectionArgs);
+                }
+                break;
+            case PROFILE_ID:
+                if (TextUtils.isEmpty(selection))
+                {
+                    rowsUpdated =
+                            sqlDB.update(DatabaseHelper.PROFILE_TABLE_NAME,
+                                    values,
+                                    ProfileContract._ID + "=" + id,
+                                    null);
+                }
+                else
+                {
+                    rowsUpdated =
+                            sqlDB.update(DatabaseHelper.PROFILE_TABLE_NAME,
+                                    values,
+                                    ProfileContract._ID + "=" + id
+                                            + " and "
+                                            + selection,
+                                    selectionArgs);
+                }
+                break;
         }
-        else
-        {
-            rowsUpdated =
-                    sqlDB.update(HomeHelper.HOME_TABLE_NAME,
-                            values,
-                            HomeContract._ID + "=" + id
-                                    + " and "
-                                    + selection,
-                            selectionArgs);
-        }
-        getContext().getContentResolver().notifyChange(uri, null, false);
+        getContext().getContentResolver().notifyChange(uri, null);
         return rowsUpdated;
     }
 }

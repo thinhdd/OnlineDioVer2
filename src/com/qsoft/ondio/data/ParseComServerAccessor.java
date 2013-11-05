@@ -6,6 +6,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.qsoft.ondio.model.Home;
+import com.qsoft.ondio.model.Profile;
+import com.qsoft.ondio.model.ProfileRepondse;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -22,7 +24,7 @@ public class ParseComServerAccessor
     {
     }
 
-    public ArrayList<Home> getShows(String token)
+    public ArrayList<Home> getShowsFeedHome(String token)
     {
         ArrayList<Home> homes = new ArrayList<Home>();
         DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -54,4 +56,30 @@ public class ParseComServerAccessor
 
         return new ArrayList<Home>();
     }
+
+    public Profile getShowsProfile(String token, String user_id)
+    {
+        Profile profile;
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        String url = "http://113.160.50.84:1009/testing/ica467/trunk/public/user-rest/" + user_id;
+        HttpGet httpGet = new HttpGet(url);
+        httpGet.addHeader("Authorization", "Bearer " + token);
+        try
+        {
+            HttpResponse response = httpClient.execute(httpGet);
+
+            String responseString = EntityUtils.toString(response.getEntity());
+            profile = new Gson().fromJson(responseString, ProfileRepondse.class).getData();
+
+            return profile;
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return new Profile();
+    }
+
 }

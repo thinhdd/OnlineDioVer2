@@ -1,12 +1,14 @@
 package com.qsoft.ondio.fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.activity.SlidebarActivity;
+import com.qsoft.ondio.data.ParseComServerAccessor;
+import com.qsoft.ondio.data.dao.ProfileContract;
 import com.qsoft.ondio.dialog.MyDialog;
 import com.qsoft.ondio.model.Profile;
 
@@ -44,7 +48,7 @@ public class ProfileFragment extends Fragment
 
     private static final int MALE = 0;
     private static final int FEMALE = 1;
-    private static String gender;
+    private static int gender;
     private static final int REQUEST_CODE_CAMERA_TAKE_PICTURE = 999;
     private static final int REQUEST_CODE_RESULT_LOAD_IMAGE = 888;
     private static final int AVATAR_CODE = 0;
@@ -54,9 +58,34 @@ public class ProfileFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.profile, null);
+        getDataToLocalDB();
         setUpUI(view);
         setUpListenerController();
+        doSetupDataToView();
         return view;
+    }
+
+    private void doSetupDataToView()
+    {
+        Cursor cursor = getActivity().getContentResolver().query(ProfileContract.CONTENT_URI, null, null, null, null);
+        if (cursor.moveToFirst())
+        {
+            int gender = cursor.getInt(cursor.getColumnIndex(ProfileContract.GENDER));
+            if (gender == 0)
+            {
+                setGender(0);
+            }
+            else
+            {
+                setGender(1);
+            }
+            etProfileName.setText(cursor.getString(cursor.getColumnIndex(ProfileContract.DISPLAY_NAME)));
+            etFullName.setText(cursor.getString(cursor.getColumnIndex(ProfileContract.FULL_NAME)));
+            etPhoneNo.setText(cursor.getString(cursor.getColumnIndex(ProfileContract.PHONE)));
+            etBirthday.setText(cursor.getString(cursor.getColumnIndex(ProfileContract.BIRTHDAY)));
+            etCountry.setText(cursor.getString(cursor.getColumnIndex(ProfileContract.COUNTRY_ID)));
+            etDescription.setText(cursor.getString(cursor.getColumnIndex(ProfileContract.DESCRIPTION)));
+        }
     }
 
     private void setUpListenerController()
@@ -141,15 +170,13 @@ public class ProfileFragment extends Fragment
     private void doSave()
     {
         Profile profile = new Profile();
-        profile.setDisplayName(etProfileName.getText().toString());
-        profile.setFullName(etFullName.getText().toString());
-        profile.setPhoneNo(etPhoneNo.getText().toString());
+        profile.setDisplay_name(etProfileName.getText().toString());
+        profile.setFull_name(etFullName.getText().toString());
+        profile.setPhone(etPhoneNo.getText().toString());
         profile.setBirthday(etBirthday.getText().toString());
         profile.setGender(gender);
-        profile.setCountry(etCountry.getText().toString());
+        profile.setCountry_id(Integer.parseInt(etCountry.getText().toString()));
         profile.setDescription(etDescription.getText().toString());
-
-        // save(profile);
     }
 
     private void setCoverImage()
@@ -169,12 +196,12 @@ public class ProfileFragment extends Fragment
         switch (gender)
         {
             case MALE:
-                ProfileFragment.gender = "male";
+                ProfileFragment.gender = 1;
                 btMale.setBackgroundResource(R.drawable.profile_male);
                 btFemale.setBackgroundResource(R.drawable.profile_female_visible);
                 break;
             case FEMALE:
-                ProfileFragment.gender = "female";
+                ProfileFragment.gender = 0;
                 btFemale.setBackgroundResource(R.drawable.profile_female);
                 btMale.setBackgroundResource(R.drawable.profile_male_visible);
                 break;
@@ -276,5 +303,26 @@ public class ProfileFragment extends Fragment
         mImageView.setImageBitmap(result);
         mImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         mImageView.setBackgroundResource(R.drawable.profile_frame);
+    }
+
+    public void getDataToLocalDB()
+    {
+        SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String token = setting.getString("authToken", "n/a");
+        String user_id = setting.getString("user_id", "n/a");
+        ParseComServerAccessor parseComServerAccessor = new ParseComServerAccessor();
+        Profile profile = parseComServerAccessor.getShowsProfile(token, user_id);
+        Cursor c = getActivity().getContentResolver().query(ProfileContract.CONTENT_URI, null
+                , null, null, null);
+        if (c.moveToFirst())
+        {
+            Uri updateUri = ProfileContract.CONTENT_URI.buildUpon()
+                    .appendPath("1").build();
+            getActivity().getContentResolver().update(updateUri, profile.getContentValues(), null, null);
+        }
+        else
+        {
+            getActivity().getContentResolver().insert(ProfileContract.CONTENT_URI, profile.getContentValues());
+        }
     }
 }

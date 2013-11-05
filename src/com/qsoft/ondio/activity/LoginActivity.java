@@ -209,6 +209,8 @@ public class LoginActivity extends AccountAuthenticatorActivity
                         data.putString(AccountManager.KEY_ACCOUNT_TYPE, Common.ARG_ACCOUNT_TYPE);
                         data.putString(AccountManager.KEY_AUTHTOKEN, user.getAccess_token());
 
+                        saveInfo(user.getAccess_token(), userName, user.getUser_id());
+
                         Log.d(TAG, "Show token" + user.getAccess_token());
                         Bundle userData = new Bundle();
                         userData.putString(Common.USERDATA_USER_OBJ_ID, user.getUser_id());
@@ -256,7 +258,6 @@ public class LoginActivity extends AccountAuthenticatorActivity
         {
             String authtoken = intentContenxt.getStringExtra(AccountManager.KEY_AUTHTOKEN);
             String authtokenType = mAuthTokenType;
-            saveInfo(authtoken, accountName);
             intent = new Intent(getBaseContext(), SlidebarActivity.class);
             startActivity(intent);
             mAccountManager.addAccountExplicitly(account, accountPassword, intentContenxt.getBundleExtra(AccountManager.KEY_USERDATA));
@@ -273,12 +274,13 @@ public class LoginActivity extends AccountAuthenticatorActivity
         setResult(RESULT_OK, intentContenxt);
     }
 
-    private void saveInfo(String authtoken, String account)
+    private void saveInfo(String access_token, String account, String user_id)
     {
         SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = setting.edit();
-        editor.putString("authToken", authtoken);
+        editor.putString("authToken", access_token);
         editor.putString("account", account);
+        editor.putString("user_id", user_id);
         editor.commit();
     }
 }

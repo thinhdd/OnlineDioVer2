@@ -3,9 +3,7 @@ package com.qsoft.ondio.customui;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.data.dao.HomeContract;
@@ -30,14 +28,9 @@ public class ArrayAdapterCustom extends SimpleCursorAdapter
     private TextView home_tvComment;
     private TextView home_tvDays;
 
-    private int layout;
-    private final LayoutInflater inflater;
-
     public ArrayAdapterCustom(Context context, int layout, Cursor c, String[] from, int[] to)
     {
         super(context, layout, c, from, to);
-        this.layout = layout;
-        this.inflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -52,13 +45,6 @@ public class ArrayAdapterCustom extends SimpleCursorAdapter
         long day = numberOfDay(cursor.getString(cursor.getColumnIndex(HomeContract.UPDATED_AT)));
         home_tvDays.setText("day " + day);
     }
-
-    @Override
-    public View newView(Context context, Cursor cursor, ViewGroup parent)
-    {
-        return inflater.inflate(layout, null);
-    }
-
 
 
 //    @Override
