@@ -170,13 +170,31 @@ public class ProfileFragment extends Fragment
     private void doSave()
     {
         Profile profile = new Profile();
-        profile.setDisplay_name(etProfileName.getText().toString());
+        if (checkFieldEmpty())
+        {
+            profile.setDisplay_name(etProfileName.getText().toString());
+        }
         profile.setFull_name(etFullName.getText().toString());
         profile.setPhone(etPhoneNo.getText().toString());
         profile.setBirthday(etBirthday.getText().toString());
         profile.setGender(gender);
         profile.setCountry_id(Integer.parseInt(etCountry.getText().toString()));
         profile.setDescription(etDescription.getText().toString());
+    }
+
+    private Boolean checkFieldEmpty()
+    {
+        View[] viewList = {etProfileName, etFullName, etPhoneNo, etBirthday, etCountry, etDescription};
+        for (View view : viewList)
+        {
+            EditText edit = (EditText) view;
+            if (edit.getText().toString() == null)
+            {
+                Toast.makeText(getActivity(), edit.get) 000
+                return false;
+            }
+        }
+        return true;
     }
 
     private void setCoverImage()
