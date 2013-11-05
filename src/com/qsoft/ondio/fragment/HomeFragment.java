@@ -24,6 +24,7 @@ public class HomeFragment extends Fragment
     private Button btMenu;
     private Button btNotifications;
     private String TAG = "HomeFragment";
+    private String accountName;
 
 
     @Override
@@ -31,6 +32,8 @@ public class HomeFragment extends Fragment
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.home, null);
+        SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        accountName = setting.getString("account", "n/a");
         doSyncData();
         setUpUI(view);
         setUpListenerController();
@@ -83,8 +86,7 @@ public class HomeFragment extends Fragment
     private void doSyncData()
     {
         Toast.makeText(getActivity(), "Notification", Toast.LENGTH_LONG).show();
-        SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String accountName = setting.getString("account", "n/a");
+
         final Account account = new Account(accountName, Common.ARG_ACCOUNT_TYPE);
         Bundle bundle = new Bundle();
         getActivity().getContentResolver().setIsSyncable(account, Common.CONTENT_AUTHORITY, 1);

@@ -56,7 +56,7 @@ public class HomeContentProvider extends ContentProvider
                 builder.setTables(DatabaseHelper.HOME_TABLE_NAME);
                 Cursor cursor = builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
                 cursor.setNotificationUri(getContext().getContentResolver(), HomeContract.CONTENT_URI);
-                return builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+                return cursor;
             }
             case HOME_ID:
             {
@@ -113,6 +113,7 @@ public class HomeContentProvider extends ContentProvider
     {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int token = URI_MATCHER.match(uri);
+
         switch (token)
         {
             case HOMES:
@@ -138,6 +139,7 @@ public class HomeContentProvider extends ContentProvider
                 throw new UnsupportedOperationException("URI: " + uri + " not supported.");
             }
         }
+
 
     }
 
@@ -198,7 +200,9 @@ public class HomeContentProvider extends ContentProvider
                 }
                 break;
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        Context ctx = getContext();
+        assert ctx != null;
+        ctx.getContentResolver().notifyChange(uri, null);
         return rowsUpdated;
     }
 }
