@@ -47,13 +47,11 @@
             android:background="@drawable/home_content_feed"
             android:layout_below="@id/home_rlTopBar"
             android:contentDescription="@string/imageview_description"/>
-    <ListView
+    <FrameLayout
             android:id="@+id/home_lvFeeds"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:listSelector="@drawable/list_selection"
-            android:layout_below="@id/home_ivContentFeed"
-            android:choiceMode="singleChoice"/>
+            android:layout_below="@id/home_ivContentFeed"/>
     <ImageButton
             android:id="@+id/home_ibSwitchToRecord"
             android:layout_width="fill_parent"

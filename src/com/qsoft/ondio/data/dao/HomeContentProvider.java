@@ -56,7 +56,7 @@ public class HomeContentProvider extends ContentProvider
                 builder.setTables(HomeHelper.HOME_TABLE_NAME);
                 builder.appendWhere(HomeContract._ID + "=" + homeSoundID);
                 Cursor cursor = builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
-                cursor.setNotificationUri(getContext().getContentResolver(), uri);
+                cursor.setNotificationUri(getContext().getContentResolver(), HomeContract.CONTENT_URI);
                 return cursor;
             }
             default:

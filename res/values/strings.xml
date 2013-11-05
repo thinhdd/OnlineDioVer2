@@ -87,6 +87,7 @@
     <string name="program_title">Program</string>
     <string name="imageview_description">ImageView Description</string>
     <string name="provider_name">Home Show</string>
+    <string name="loading">Loading</string>
 
     <string-array name="countries">
         <item>English</item>

@@ -59,6 +59,8 @@ public class ArrayAdapterCustom extends SimpleCursorAdapter
         return inflater.inflate(layout, null);
     }
 
+
+
 //    @Override
 //    public View getView(int position, View convertView, ViewGroup parent)
 //    {
