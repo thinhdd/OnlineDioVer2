@@ -1,5 +1,7 @@
 package com.qsoft.ondio.fragment;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -18,10 +20,16 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.activity.SlidebarActivity;
+import com.qsoft.ondio.cache.Image;
 import com.qsoft.ondio.data.ParseComServerAccessor;
 import com.qsoft.ondio.data.dao.ProfileContract;
 import com.qsoft.ondio.dialog.MyDialog;
 import com.qsoft.ondio.model.Profile;
+import com.qsoft.ondio.model.ProfileResponse;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * User: anhnt
@@ -41,7 +49,7 @@ public class ProfileFragment extends Fragment
     private Spinner spCountry;
     private EditText etDescription;
     private ImageView ivAvatar;
-    private RelativeLayout rlCoverImage;
+    private ImageView ivCoverImage;
     private ScrollView scroll;
     private Button btSave;
     private Button btMenu;
@@ -54,14 +62,23 @@ public class ProfileFragment extends Fragment
     private static final int AVATAR_CODE = 0;
     private static final int COVER_IMAGE_CODE = 1;
     private static int code;
+    private String token;
+    private String accountName;
+    private String user_id;
+    private AccountManager mAccountManager;
+    private Account account;
+
+    private Image image;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.profile, null);
-        getDataToLocalDB();
         setUpUI(view);
-        setUpListenerController();
+        mAccountManager = AccountManager.get(getActivity());
+        image = new Image(getActivity());
+        getDataToLocalDB();
         doSetupDataToView();
+        setUpListenerController();
         return view;
     }
 
@@ -71,20 +88,20 @@ public class ProfileFragment extends Fragment
         if (cursor.moveToFirst())
         {
             int gender = cursor.getInt(cursor.getColumnIndex(ProfileContract.GENDER));
-            if (gender == 0)
-            {
-                setGender(0);
-            }
-            else
-            {
-                setGender(1);
-            }
+            setGender(gender);
             etProfileName.setText(cursor.getString(cursor.getColumnIndex(ProfileContract.DISPLAY_NAME)));
             etFullName.setText(cursor.getString(cursor.getColumnIndex(ProfileContract.FULL_NAME)));
             etPhoneNo.setText(cursor.getString(cursor.getColumnIndex(ProfileContract.PHONE)));
             etBirthday.setText(cursor.getString(cursor.getColumnIndex(ProfileContract.BIRTHDAY)));
-            etCountry.setText(cursor.getString(cursor.getColumnIndex(ProfileContract.COUNTRY_ID)));
+            String code = cursor.getString(cursor.getColumnIndex(ProfileContract.COUNTRY_ID));
+            String name = convertToCountryName(code);
+            etCountry.setText(name);
             etDescription.setText(cursor.getString(cursor.getColumnIndex(ProfileContract.DESCRIPTION)));
+            String urlAvatar = cursor.getString(cursor.getColumnIndex(ProfileContract.AVATAR));
+            String urlCover = cursor.getString(cursor.getColumnIndex(ProfileContract.COVER_IMAGE));
+            image.DisplayImage(urlAvatar, ivAvatar);
+            image.DisplayImage(urlCover, ivCoverImage);
+
         }
     }
 
@@ -95,7 +112,7 @@ public class ProfileFragment extends Fragment
         btMale.setOnClickListener(onClickListener);
         btFemale.setOnClickListener(onClickListener);
         ivAvatar.setOnClickListener(onClickListener);
-        rlCoverImage.setOnClickListener(onClickListener);
+        ivCoverImage.setOnClickListener(onClickListener);
         etDescription.setOnClickListener(onClickListener);
         btSave.setOnClickListener(onClickListener);
         btMenu.setOnClickListener(onClickListener);
@@ -113,7 +130,7 @@ public class ProfileFragment extends Fragment
         spCountry = (Spinner) view.findViewById(R.id.profile_spCountry);
         etDescription = (EditText) view.findViewById(R.id.profile_etDescription);
         ivAvatar = (ImageView) view.findViewById(R.id.profile_ivAvatar);
-        rlCoverImage = (RelativeLayout) view.findViewById(R.id.profile_rlCoverImage);
+        ivCoverImage = (ImageView) view.findViewById(R.id.profile_ivCoverImage);
         scroll = (ScrollView) view.findViewById(R.id.profile_svScroll);
         btSave = (Button) view.findViewById(R.id.profile_btSave);
         btMenu = (Button) view.findViewById(R.id.profile_btMenu);
@@ -178,8 +195,21 @@ public class ProfileFragment extends Fragment
         profile.setPhone(etPhoneNo.getText().toString());
         profile.setBirthday(etBirthday.getText().toString());
         profile.setGender(gender);
-        profile.setCountry_id(Integer.parseInt(etCountry.getText().toString()));
+        String name = etCountry.getText().toString();
+        String code = convertToCountryCode(name);
+        profile.setCountry_id(code);
         profile.setDescription(etDescription.getText().toString());
+        ParseComServerAccessor parseComServerAccessor = new ParseComServerAccessor();
+        ProfileResponse profileResponse = parseComServerAccessor.updateProfile(profile, token, user_id);
+        if (profileResponse != null)
+        {
+            doSaveProfileToDB(profileResponse.getData());
+            doSetupDataToView();
+        }
+        else
+        {
+            Toast.makeText(getActivity(), "Input is invalid", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private Boolean checkFieldEmpty()
@@ -187,10 +217,10 @@ public class ProfileFragment extends Fragment
         View[] viewList = {etProfileName, etFullName, etPhoneNo, etBirthday, etCountry, etDescription};
         for (View view : viewList)
         {
-            EditText edit = (EditText) view;
-            if (edit.getText().toString() == null)
+            EditText editView = (EditText) view;
+            if (editView.getText().toString() == null)
             {
-                Toast.makeText(getActivity(), edit.get) 000
+                Toast.makeText(getActivity(), editView.getHint().toString() + " must not empty", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
@@ -214,12 +244,12 @@ public class ProfileFragment extends Fragment
         switch (gender)
         {
             case MALE:
-                ProfileFragment.gender = 1;
+                this.gender = 2;
                 btMale.setBackgroundResource(R.drawable.profile_male);
                 btFemale.setBackgroundResource(R.drawable.profile_female_visible);
                 break;
             case FEMALE:
-                ProfileFragment.gender = 0;
+                this.gender = 1;
                 btFemale.setBackgroundResource(R.drawable.profile_female);
                 btMale.setBackgroundResource(R.drawable.profile_male_visible);
                 break;
@@ -234,7 +264,8 @@ public class ProfileFragment extends Fragment
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
-                showCountry(adapterView.getSelectedItem().toString());
+                String country = adapterView.getSelectedItem().toString();
+                showCountry(country);
             }
 
             @Override
@@ -242,6 +273,22 @@ public class ProfileFragment extends Fragment
             {
             }
         });
+    }
+
+    private String convertToCountryName(String code)
+    {
+        String[] countryName = getResources().getStringArray(R.array.countries);
+        String[] countryCode = getResources().getStringArray(R.array.countries_code);
+        List<String> listCode = new ArrayList<String>(Arrays.asList(countryCode));
+        return countryName[listCode.indexOf(code.toUpperCase())];
+    }
+
+    private String convertToCountryCode(String name)
+    {
+        String[] countryName = getResources().getStringArray(R.array.countries);
+        String[] countryCode = getResources().getStringArray(R.array.countries_code);
+        List<String> listName = new ArrayList<String>(Arrays.asList(countryName));
+        return countryCode[listName.indexOf(name)];
     }
 
     private void showCountry(String address)
@@ -283,7 +330,7 @@ public class ProfileFragment extends Fragment
                 break;
             case COVER_IMAGE_CODE:
                 Drawable cover = new BitmapDrawable(photo);
-                rlCoverImage.setBackgroundDrawable(cover);
+                ivCoverImage.setBackgroundDrawable(cover);
                 break;
         }
     }
@@ -298,7 +345,7 @@ public class ProfileFragment extends Fragment
                 break;
             case COVER_IMAGE_CODE:
                 Drawable cover = new BitmapDrawable(photo);
-                rlCoverImage.setBackgroundDrawable(cover);
+                ivCoverImage.setBackgroundDrawable(cover);
                 break;
         }
         Log.d("CameraDemo", "Pic saved");
@@ -326,10 +373,15 @@ public class ProfileFragment extends Fragment
     public void getDataToLocalDB()
     {
         SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String token = setting.getString("authToken", "n/a");
-        String user_id = setting.getString("user_id", "n/a");
+        token = setting.getString("authToken", "n/a");
+        user_id = setting.getString("user_id", "n/a");
         ParseComServerAccessor parseComServerAccessor = new ParseComServerAccessor();
         Profile profile = parseComServerAccessor.getShowsProfile(token, user_id);
+        doSaveProfileToDB(profile);
+    }
+
+    private void doSaveProfileToDB(Profile profile)
+    {
         Cursor c = getActivity().getContentResolver().query(ProfileContract.CONTENT_URI, null
                 , null, null, null);
         if (c.moveToFirst())

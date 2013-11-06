@@ -46,6 +46,11 @@
                         android:layout_height="@dimen/phone_coverimage_height_size"
                         android:background="@drawable/cover_image"
                         android:scaleType="fitXY">
+            <ImageView
+                    android:id="@+id/profile_ivCoverImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/phone_coverimage_height_size"
+                    android:background="@drawable/cover_image"/>
 
             <com.qsoft.ondio.util.MaskImage
                     android:id="@+id/profile_ivAvatar"

@@ -7,7 +7,7 @@ package com.qsoft.ondio.model;
  * Time: 11:35 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ProfileRepondse
+public class ProfileResponse
 {
     String code;
     String status;

@@ -40,4 +40,5 @@ public class Common
     public static final int COLUMN_USERNAME = 14;
     public static final int COLUMN_DISPLAY_NAME = 15;
     public static final int COLUMN_AVATAR = 16;
+
 }

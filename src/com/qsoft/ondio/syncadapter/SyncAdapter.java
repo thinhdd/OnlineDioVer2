@@ -10,9 +10,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import com.qsoft.ondio.data.ParseComServerAccessor;
 import com.qsoft.ondio.data.dao.HomeContract;
-import com.qsoft.ondio.data.dao.ProfileContract;
 import com.qsoft.ondio.model.Home;
-import com.qsoft.ondio.model.Profile;
 import com.qsoft.ondio.util.Common;
 
 import java.text.ParseException;
@@ -27,44 +25,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
     private final AccountManager mAccountManager;
 
     private final ContentResolver mContentResolver;
-//    private static final String[] PROJECTION = new String[]{
-//            HomeContract._ID,
-//            HomeContract.ID,
-//            HomeContract.USER_ID,
-//            HomeContract.TITLE,
-//            HomeContract.THUMBNAIL,
-//            HomeContract.DESCRIPTION,
-//            HomeContract.SOUND_PATH,
-//            HomeContract.DURATION,
-//            HomeContract.PLAYED,
-//            HomeContract.CREATED_AT,
-//            HomeContract.UPDATED_AT,
-//            HomeContract.LIKES,
-//            HomeContract.VIEWED,
-//            HomeContract.COMMENTS,
-//            HomeContract.USERNAME,
-//            HomeContract.DISPLAY_NAME,
-//            HomeContract.AVATAR};
 
-    /**
-     * Constructor. Obtains handle to content resolver for later use.
-     */
     public SyncAdapter(Context context, boolean autoInitialize)
     {
         super(context, autoInitialize);
         mContentResolver = context.getContentResolver();
         mAccountManager = AccountManager.get(context);
 
-    }
-
-    /**
-     * Constructor. Obtains handle to content resolver for later use.
-     */
-    public SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs)
-    {
-        super(context, autoInitialize, allowParallelSyncs);
-        mContentResolver = context.getContentResolver();
-        mAccountManager = AccountManager.get(context);
     }
 
     @Override
@@ -105,47 +72,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
             throws RemoteException,
             OperationApplicationException, ParseException
     {
-
-
         doSyncHome(account, syncResult);
-
-        //doSyncProfile(account, syncResult);
-
-        // IMPORTANT: Do not sync to network
         mContentResolver.notifyChange(HomeContract.CONTENT_URI, null, false);
 
     }
 
-    private void doSyncProfile(Account account, SyncResult syncResult) throws RemoteException, OperationApplicationException
-    {
-        final ParseComServerAccessor feedParser = new ParseComServerAccessor();
-        final ContentResolver contentResolver = getContext().getContentResolver();
-
-        String authToken = mAccountManager.peekAuthToken(account,
-                Common.AUTHTOKEN_TYPE_FULL_ACCESS);
-        final Profile profile = feedParser.getShowsProfile(authToken, authToken);
-
-
-        ArrayList<ContentProviderOperation> batch = new ArrayList<ContentProviderOperation>();
-        Uri uri = ProfileContract.CONTENT_URI; // Get all entries
-        Cursor c = contentResolver.query(uri, null
-                , null, null, null);
-        if (c.moveToFirst())
-        {
-            int _id = c.getInt(c.getColumnIndex("_id"));
-            Uri deleteUri = ProfileContract.CONTENT_URI.buildUpon()
-                    .appendPath(Integer.toString(_id)).build();
-            batch.add(ContentProviderOperation.newDelete(deleteUri).build());
-            syncResult.stats.numDeletes++;
-        }
-        c.close();
-        batch.add(ContentProviderOperation.newInsert(ProfileContract.CONTENT_URI)
-                .withValues(profile.getContentValues())
-                .build());
-        syncResult.stats.numInserts++;
-        mContentResolver.applyBatch(HomeContract.AUTHORITY, batch);
-
-    }
 
     private void doSyncHome(Account account, SyncResult syncResult) throws RemoteException, OperationApplicationException
     {

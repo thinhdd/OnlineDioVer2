@@ -5,7 +5,6 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -60,38 +59,11 @@ public class MainActivity extends Activity
 
     private void doLogin()
     {
-        Boolean accountConnect = doCheckTokenCurrent();
-        if (accountConnect)
-        {
-            Intent intent = new Intent(this, SlidebarActivity.class);
-            startActivity(intent);
-        }
-        else
-        {
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.putExtra("IS_ADDING_ACCOUNT", true);
-            startActivity(intent);
-        }
-    }
-
-    private Boolean doCheckTokenCurrent()
-    {
         getTokenForAccountCreateIfNeeded(Common.ARG_ACCOUNT_TYPE, Common.AUTHTOKEN_TYPE_FULL_ACCESS);
-        if (null != authToken)
-        {
-            SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor editor = setting.edit();
-            editor.putString("authToken", authToken);
-            editor.commit();
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+
     }
 
-    private String getTokenForAccountCreateIfNeeded(String accountType, String authTokenType)
+    private void getTokenForAccountCreateIfNeeded(String accountType, String authTokenType)
     {
         final AccountManagerFuture<Bundle> future = mAccountManager.getAuthTokenByFeatures(accountType, authTokenType, null, this, null, null,
                 new AccountManagerCallback<Bundle>()
@@ -104,13 +76,23 @@ public class MainActivity extends Activity
                         {
                             bnd = future.getResult();
                             authToken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
-                            if (authToken != null)
+                            if (null != authToken)
                             {
                                 String accountName = bnd.getString(AccountManager.KEY_ACCOUNT_NAME);
                                 mConnectedAccount = new Account(accountName, Common.ARG_ACCOUNT_TYPE);
+                                SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                SharedPreferences.Editor editor = setting.edit();
+                                editor.putString("authToken", authToken);
+                                editor.commit();
+                                Intent intent = new Intent(getApplicationContext(), SlidebarActivity.class);
+                                startActivity(intent);
 
-                                ContentResolver.setIsSyncable(mConnectedAccount, Common.CONTENT_AUTHORITY, 1);
-                                ContentResolver.setSyncAutomatically(mConnectedAccount, Common.CONTENT_AUTHORITY, true);
+                            }
+                            else
+                            {
+                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                intent.putExtra("IS_ADDING_ACCOUNT", true);
+                                startActivity(intent);
                             }
                         }
                         catch (Exception e)
@@ -121,7 +103,6 @@ public class MainActivity extends Activity
                     }
                 }
                 , null);
-        return authToken;
     }
 
     private void showMessage(final String msg)

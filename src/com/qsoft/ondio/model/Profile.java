@@ -19,11 +19,16 @@ public class Profile implements Serializable
     private String phone;
     private String birthday;
     private int gender;
-    private int country_id;
+    private String country_id;
     private int storage_plan_id;
     private String description;
     private String created_at;
     private String updated_at;
+    private String sounds;
+    private String favorites;
+    private String likes;
+    private String followings;
+    private String audiences;
 
     public int getId()
     {
@@ -135,12 +140,12 @@ public class Profile implements Serializable
         this.gender = gender;
     }
 
-    public int getCountry_id()
+    public String getCountry_id()
     {
         return country_id;
     }
 
-    public void setCountry_id(int country_id)
+    public void setCountry_id(String country_id)
     {
         this.country_id = country_id;
     }
@@ -185,6 +190,56 @@ public class Profile implements Serializable
         this.updated_at = updated_at;
     }
 
+    public String getSounds()
+    {
+        return sounds;
+    }
+
+    public void setSounds(String sounds)
+    {
+        this.sounds = sounds;
+    }
+
+    public String getFavorites()
+    {
+        return favorites;
+    }
+
+    public void setFavorites(String favorites)
+    {
+        this.favorites = favorites;
+    }
+
+    public String getLikes()
+    {
+        return likes;
+    }
+
+    public void setLikes(String likes)
+    {
+        this.likes = likes;
+    }
+
+    public String getFollowings()
+    {
+        return followings;
+    }
+
+    public void setFollowings(String followings)
+    {
+        this.followings = followings;
+    }
+
+    public String getAudiences()
+    {
+        return audiences;
+    }
+
+    public void setAudiences(String audiences)
+    {
+        this.audiences = audiences;
+    }
+
     public ContentValues getContentValues()
     {
         ContentValues values = new ContentValues();
@@ -196,6 +251,8 @@ public class Profile implements Serializable
         values.put(ProfileContract.GENDER, gender);
         values.put(ProfileContract.COUNTRY_ID, country_id);
         values.put(ProfileContract.DESCRIPTION, description);
+        values.put(ProfileContract.AVATAR, avatar);
+        values.put(ProfileContract.COVER_IMAGE, cover_image);
         return values;
     }
 }

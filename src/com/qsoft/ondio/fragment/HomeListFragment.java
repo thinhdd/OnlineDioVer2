@@ -29,6 +29,7 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
             HomeContract.UPDATED_AT,
             HomeContract.LIKES,
             HomeContract.COMMENTS,
+            HomeContract.AVATAR
     };
 
     private static final String[] FROM_COLUMNS = new String[]{
@@ -36,13 +37,15 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
             HomeContract.DISPLAY_NAME,
             HomeContract.LIKES,
             HomeContract.COMMENTS,
+            HomeContract.AVATAR,
     };
 
     private static final int[] TO_FIELDS = new int[]{
             R.id.home_tvSoundTitle,
             R.id.home_tvUserName,
             R.id.home_tvLike,
-            R.id.home_tvNumberComment
+            R.id.home_tvNumberComment,
+            R.id.home_ivAvatar
     };
     ArrayAdapterCustom mAdapter;
 
@@ -65,15 +68,12 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
         );
         mAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder()
         {
-
             @Override
             public boolean setViewValue(View view, Cursor cursor, int i)
             {
                 return false;
             }
         });
-
-        setListShown(false);
         setListAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
     }
@@ -96,7 +96,6 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
     public void onLoaderReset(Loader<Cursor> loader)
     {
         mAdapter.swapCursor(null);
-        setListShown(true);
-    }
 
+    }
 }

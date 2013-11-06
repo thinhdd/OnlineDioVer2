@@ -1,6 +1,7 @@
 package com.qsoft.ondio.fragment;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ public class HomeFragment extends Fragment
     private Button btNotifications;
     private String TAG = "HomeFragment";
     private String accountName;
+    private AccountManager accountManager;
 
 
     @Override
@@ -34,7 +36,8 @@ public class HomeFragment extends Fragment
         View view = inflater.inflate(R.layout.home, null);
         SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getActivity());
         accountName = setting.getString("account", "n/a");
-        doSyncData();
+        accountManager = AccountManager.
+                doSyncData();
         setUpUI(view);
         setUpListenerController();
         final FragmentTransaction ft = getFragmentManager().beginTransaction();
