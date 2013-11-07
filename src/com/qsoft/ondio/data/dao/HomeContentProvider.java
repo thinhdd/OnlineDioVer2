@@ -60,10 +60,10 @@ public class HomeContentProvider extends ContentProvider
             }
             case HOME_ID:
             {
-                int homeSoundID = (int) ContentUris.parseId(uri);
                 SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
                 builder.setTables(DatabaseHelper.HOME_TABLE_NAME);
-                builder.appendWhere(HomeContract._ID + "=" + homeSoundID);
+                builder.appendWhere(HomeContract.USER_ID + "="
+                        + uri.getLastPathSegment());
                 Cursor cursor = builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
                 cursor.setNotificationUri(getContext().getContentResolver(), HomeContract.CONTENT_URI);
                 return cursor;
@@ -79,7 +79,7 @@ public class HomeContentProvider extends ContentProvider
                 int profileID = (int) ContentUris.parseId(uri);
                 SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
                 builder.setTables(DatabaseHelper.PROFILE_TABLE_NAME);
-                builder.appendWhere(ProfileContract._ID + "=" + profileID);
+                builder.appendWhere(ProfileContract.ID + "=" + profileID);
                 Cursor cursor = builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
                 cursor.setNotificationUri(getContext().getContentResolver(), ProfileContract.CONTENT_URI);
                 return cursor;
@@ -146,7 +146,41 @@ public class HomeContentProvider extends ContentProvider
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs)
     {
-        return 1;
+        int token = URI_MATCHER.match(uri);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        int rowsDeleted = -1;
+        switch (token)
+        {
+            case HOMES:
+                rowsDeleted = db.delete(DatabaseHelper.HOME_TABLE_NAME, selection, selectionArgs);
+                break;
+            case HOME_ID:
+                String homeFeedIdWhereClause = DatabaseHelper.HOME_TABLE_NAME + "=" + uri.getLastPathSegment();
+                if (!TextUtils.isEmpty(selection))
+                {
+                    homeFeedIdWhereClause += " AND " + selection;
+                }
+                rowsDeleted = db.delete(DatabaseHelper.HOME_TABLE_NAME, homeFeedIdWhereClause, selectionArgs);
+                break;
+            case PROFILES:
+                rowsDeleted = db.delete(DatabaseHelper.PROFILE_TABLE_NAME, selection, selectionArgs);
+                break;
+            case PROFILE_ID:
+                String profileIdWhereClause = DatabaseHelper.PROFILE_TABLE_NAME + "=" + uri.getLastPathSegment();
+                if (!TextUtils.isEmpty(selection))
+                {
+                    profileIdWhereClause += " AND " + selection;
+                }
+                rowsDeleted = db.delete(DatabaseHelper.PROFILE_TABLE_NAME, profileIdWhereClause, selectionArgs);
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported URI: " + uri);
+        }
+        if (rowsDeleted != -1)
+        {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsDeleted;
     }
 
     @Override

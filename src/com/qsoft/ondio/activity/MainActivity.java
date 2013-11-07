@@ -79,10 +79,11 @@ public class MainActivity extends Activity
                             if (null != authToken)
                             {
                                 String accountName = bnd.getString(AccountManager.KEY_ACCOUNT_NAME);
+                                String user_id = bnd.getString(Common.PARAM_USER_ID);
                                 mConnectedAccount = new Account(accountName, Common.ARG_ACCOUNT_TYPE);
                                 SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                                 SharedPreferences.Editor editor = setting.edit();
-                                editor.putString("authToken", authToken);
+                                editor.putString("accountName", accountName);
                                 editor.commit();
                                 Intent intent = new Intent(getApplicationContext(), SlidebarActivity.class);
                                 startActivity(intent);

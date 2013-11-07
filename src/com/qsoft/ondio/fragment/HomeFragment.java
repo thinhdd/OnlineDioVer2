@@ -36,8 +36,8 @@ public class HomeFragment extends Fragment
         View view = inflater.inflate(R.layout.home, null);
         SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getActivity());
         accountName = setting.getString("account", "n/a");
-        accountManager = AccountManager.
-                doSyncData();
+        accountManager = AccountManager.get(getActivity());
+        doSyncData();
         setUpUI(view);
         setUpListenerController();
         final FragmentTransaction ft = getFragmentManager().beginTransaction();

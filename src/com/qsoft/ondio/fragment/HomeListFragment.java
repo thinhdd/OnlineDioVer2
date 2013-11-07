@@ -1,7 +1,9 @@
 package com.qsoft.ondio.fragment;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -21,9 +23,10 @@ import com.qsoft.ondio.data.dao.HomeContract;
  */
 public class HomeListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
-
+    String user_id;
     private static final String[] PROJECTION = new String[]{
             HomeContract._ID,
+            HomeContract.USER_ID,
             HomeContract.TITLE,
             HomeContract.DISPLAY_NAME,
             HomeContract.UPDATED_AT,
@@ -56,6 +59,8 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
     {
         super.onActivityCreated(savedInstanceState);
 
+        SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        user_id = setting.getString("user_id", "n/a");
         setEmptyText("No data");
 
         // Create an empty adapter we will use to display the loaded data.
@@ -82,6 +87,7 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
+//        Uri uri = ContentUris.withAppendedId(HomeContract.CONTENT_URI, Long.parseLong(user_id));
         return new CursorLoader(getActivity(), HomeContract.CONTENT_URI,
                 PROJECTION, null, null, null);
     }

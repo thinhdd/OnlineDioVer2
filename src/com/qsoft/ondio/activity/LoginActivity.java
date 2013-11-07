@@ -23,7 +23,6 @@ import com.qsoft.ondio.R;
 import com.qsoft.ondio.dialog.MyDialog;
 import com.qsoft.ondio.model.User;
 import com.qsoft.ondio.util.Common;
-import com.qsoft.ondio.util.HashStringToMD5;
 import com.qsoft.ondio.util.NetworkAvailable;
 
 public class LoginActivity extends AccountAuthenticatorActivity
@@ -38,8 +37,6 @@ public class LoginActivity extends AccountAuthenticatorActivity
     private TextView tvForgotPassword;
     private EditText etEmail;
     private EditText etPassword;
-    private static Boolean isLogin = false;
-    private static Boolean isLogins = false;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -202,6 +199,7 @@ public class LoginActivity extends AccountAuthenticatorActivity
                 Bundle data = new Bundle();
                 try
                 {
+
                     User user = Common.sServerAuthenticate.userSignIn(userName, password, mAuthTokenType);
                     if (user.getAccess_token() != null)
                     {
@@ -216,7 +214,7 @@ public class LoginActivity extends AccountAuthenticatorActivity
                         userData.putString(Common.USERDATA_USER_OBJ_ID, user.getUser_id());
                         data.putBundle(AccountManager.KEY_USERDATA, userData);
 
-                        data.putString(Common.PARAM_USER_PASS, new HashStringToMD5().doConvert(password));
+                        data.putString(Common.PARAM_USER_PASS, password);
                     }
                     else
                     {

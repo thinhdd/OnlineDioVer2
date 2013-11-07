@@ -27,11 +27,11 @@ public class Image
 
     public Image(Context context)
     {
-        this.fileCache = new FileCache(context);
+        this.fileCache = new FileCache(context, "imageList");
         executor = Executors.newFixedThreadPool(5);//create an executor service with maximum thread is 5
     }
 
-    public void DisplayImage(String url, ImageView view)
+    public Bitmap DisplayImage(String url, ImageView view)
     {
         imageViews.put(view, url);//put image view with url to the map imageViews
 
@@ -45,6 +45,7 @@ public class Image
         {
             view.setImageBitmap(bitmap);
         }
+        return cacheManager.get(url);
     }
 
     public void QueuePhotos(String url, ImageView view)

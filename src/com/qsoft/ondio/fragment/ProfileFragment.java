@@ -21,21 +21,18 @@ import android.widget.*;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.activity.SlidebarActivity;
 import com.qsoft.ondio.cache.Image;
+import com.qsoft.ondio.cache.ProfileAvatarLoader;
 import com.qsoft.ondio.data.ParseComServerAccessor;
 import com.qsoft.ondio.data.dao.ProfileContract;
 import com.qsoft.ondio.dialog.MyDialog;
 import com.qsoft.ondio.model.Profile;
 import com.qsoft.ondio.model.ProfileResponse;
+import com.qsoft.ondio.util.Common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * User: anhnt
- * Date: 10/16/13
- * Time: 8:56 AM
- */
 public class ProfileFragment extends Fragment
 {
     private static final String TAG = "ProfileFragment";
@@ -63,7 +60,6 @@ public class ProfileFragment extends Fragment
     private static final int COVER_IMAGE_CODE = 1;
     private static int code;
     private String token;
-    private String accountName;
     private String user_id;
     private AccountManager mAccountManager;
     private Account account;
@@ -74,12 +70,20 @@ public class ProfileFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.profile, null);
         setUpUI(view);
-        mAccountManager = AccountManager.get(getActivity());
+        setAccountCurrent();
         image = new Image(getActivity());
         getDataToLocalDB();
         doSetupDataToView();
         setUpListenerController();
         return view;
+    }
+
+    private void setAccountCurrent()
+    {
+        mAccountManager = AccountManager.get(getActivity());
+        SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String accountName = setting.getString("account", "n/a");
+        account = new Account(accountName, Common.ARG_ACCOUNT_TYPE);
     }
 
     private void doSetupDataToView()
@@ -99,8 +103,8 @@ public class ProfileFragment extends Fragment
             etDescription.setText(cursor.getString(cursor.getColumnIndex(ProfileContract.DESCRIPTION)));
             String urlAvatar = cursor.getString(cursor.getColumnIndex(ProfileContract.AVATAR));
             String urlCover = cursor.getString(cursor.getColumnIndex(ProfileContract.COVER_IMAGE));
-            image.DisplayImage(urlAvatar, ivAvatar);
             image.DisplayImage(urlCover, ivCoverImage);
+            new ProfileAvatarLoader(getActivity(), this).DisplayImage(urlAvatar, ivAvatar);
 
         }
     }
@@ -200,7 +204,7 @@ public class ProfileFragment extends Fragment
         profile.setCountry_id(code);
         profile.setDescription(etDescription.getText().toString());
         ParseComServerAccessor parseComServerAccessor = new ParseComServerAccessor();
-        ProfileResponse profileResponse = parseComServerAccessor.updateProfile(profile, token, user_id);
+        ProfileResponse profileResponse = parseComServerAccessor.updateProfile(account, mAccountManager, profile, token, user_id);
         if (profileResponse != null)
         {
             doSaveProfileToDB(profileResponse.getData());
@@ -373,10 +377,10 @@ public class ProfileFragment extends Fragment
     public void getDataToLocalDB()
     {
         SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        token = setting.getString("authToken", "n/a");
         user_id = setting.getString("user_id", "n/a");
+        token = mAccountManager.peekAuthToken(account, Common.ARG_ACCOUNT_TYPE);
         ParseComServerAccessor parseComServerAccessor = new ParseComServerAccessor();
-        Profile profile = parseComServerAccessor.getShowsProfile(token, user_id);
+        Profile profile = parseComServerAccessor.getShowsProfile(account, mAccountManager, token, user_id);
         doSaveProfileToDB(profile);
     }
 
@@ -388,11 +392,27 @@ public class ProfileFragment extends Fragment
         {
             Uri updateUri = ProfileContract.CONTENT_URI.buildUpon()
                     .appendPath("1").build();
+            profile = checkAvatarAndCover(c, profile);
             getActivity().getContentResolver().update(updateUri, profile.getContentValues(), null, null);
         }
         else
         {
             getActivity().getContentResolver().insert(ProfileContract.CONTENT_URI, profile.getContentValues());
         }
+    }
+
+    private Profile checkAvatarAndCover(Cursor c, Profile profile)
+    {
+        String avatar = c.getString(c.getColumnIndex(ProfileContract.AVATAR));
+        String cover = c.getString(c.getColumnIndex(ProfileContract.COVER_IMAGE));
+        if (avatar != null && avatar.contains("/" + profile.getAvatar()))
+        {
+            profile.setAvatar(avatar);
+        }
+        if (cover != null && cover.contains("/" + profile.getCover_image()))
+        {
+            profile.setCover_image(cover);
+        }
+        return profile;
     }
 }

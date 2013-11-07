@@ -9,11 +9,11 @@ public class FileCache
     private File fileCacheDir;
 
     //create directory store cache image from server
-    public FileCache(Context context)
+    public FileCache(Context context, String fileName)
     {
         if (android.os.Environment.getExternalStorageDirectory().equals(android.os.Environment.MEDIA_MOUNTED))
         {
-            fileCacheDir = new File(android.os.Environment.getDownloadCacheDirectory(), "imageList");
+            fileCacheDir = new File(android.os.Environment.getDownloadCacheDirectory(), fileName);
         }
         else
         {

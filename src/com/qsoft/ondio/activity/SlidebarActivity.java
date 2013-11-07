@@ -1,5 +1,7 @@
 package com.qsoft.ondio.activity;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +21,7 @@ import com.qsoft.ondio.R;
 import com.qsoft.ondio.customui.ArrayAdapterListOption;
 import com.qsoft.ondio.fragment.HomeFragment;
 import com.qsoft.ondio.fragment.ProfileFragment;
+import com.qsoft.ondio.util.Common;
 
 /**
  * User: thinhdd
@@ -44,23 +47,18 @@ public class SlidebarActivity extends FragmentActivity
     private RelativeLayout rlLeftDrawer;
     private RelativeLayout slidebar_rlProfile;
     FragmentTransaction fragmentTransaction;
+    AccountManager mAccountManager;
 
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.slidebar);
-        token = getToken();
+        mAccountManager = AccountManager.get(getBaseContext());
         setUpUI();
         setUpDataListOption(this);
         setUpListenerController();
-//        fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//        fragmentTransaction.replace(R.id.content_frame, Fragment.instantiate(SlidebarActivity.this, "com.qsoft.ondio.fragment.HomeFragment"));
-//        fragmentTransaction.commit();
 
         Fragment homeFragment = new HomeFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("token", token);
-        homeFragment.setArguments(bundle);
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, homeFragment, "HomeFragment");
         fragmentTransaction.commit();
@@ -96,12 +94,24 @@ public class SlidebarActivity extends FragmentActivity
                     ft.commit();
                     break;
                 case SIGN_OUT:
-                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                    doSignOut();
                     break;
             }
             setCloseListOption();
         }
     };
+
+    private void doSignOut()
+    {
+        SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        String accountName = setting.getString("account", "n/a");
+        Account account = new Account(accountName, Common.ARG_ACCOUNT_TYPE);
+        String token = mAccountManager.peekAuthToken(account, Common.ARG_ACCOUNT_TYPE);
+        mAccountManager.invalidateAuthToken(Common.ARG_ACCOUNT_TYPE, token);
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.putExtra("IS_ADDING_ACCOUNT", true);
+        startActivity(intent);
+    }
 
     private final View.OnClickListener onClickListener = new View.OnClickListener()
     {
@@ -149,12 +159,6 @@ public class SlidebarActivity extends FragmentActivity
                 break;
         }
         fragment.onActivityResult(requestCode, resultCode, data);
-    }
-
-    public String getToken()
-    {
-        SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(this);
-        return setting.getString("authToken", "n/a");
     }
 
     public void setOpenListOption()

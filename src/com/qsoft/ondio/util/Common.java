@@ -9,6 +9,7 @@ public class Common
     // Constants representing column positions from PROJECTION.
     public static final int COLUMN_ID = 0;
     public static String TYPE_SYNC = "TYPE_SYNC";
+    public final static String PARAM_USER_ID = "USER_ID";
     private final int REQ_SIGNUP = 1;
     public final static String ARG_ACCOUNT_TYPE = "com.qsoft.onlinedio";
     public final static String ARG_AUTH_TYPE = "AUTH_TYPE";
