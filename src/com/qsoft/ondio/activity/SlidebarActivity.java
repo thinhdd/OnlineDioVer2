@@ -108,9 +108,10 @@ public class SlidebarActivity extends FragmentActivity
         Account account = new Account(accountName, Common.ARG_ACCOUNT_TYPE);
         String token = mAccountManager.peekAuthToken(account, Common.ARG_ACCOUNT_TYPE);
         mAccountManager.invalidateAuthToken(Common.ARG_ACCOUNT_TYPE, token);
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        intent.putExtra("IS_ADDING_ACCOUNT", true);
-        startActivity(intent);
+//        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+////        intent.putExtra("IS_ADDING_ACCOUNT", true);
+//        startActivity(intent);
+        finish();
     }
 
     private final View.OnClickListener onClickListener = new View.OnClickListener()

@@ -12,12 +12,6 @@ import com.qsoft.ondio.util.Common;
 
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Udini
- * Date: 19/03/13
- * Time: 18:58
- */
 public class UdinicAuthenticator extends AbstractAccountAuthenticator
 {
 
@@ -27,8 +21,6 @@ public class UdinicAuthenticator extends AbstractAccountAuthenticator
     public UdinicAuthenticator(Context context)
     {
         super(context);
-
-        // I hate you! Google - set mContext as protected!
         this.mContext = context;
     }
 

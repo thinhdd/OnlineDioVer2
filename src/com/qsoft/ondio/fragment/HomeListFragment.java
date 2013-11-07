@@ -1,7 +1,9 @@
 package com.qsoft.ondio.fragment;
 
+import android.content.ContentUris;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
@@ -14,13 +16,6 @@ import com.qsoft.ondio.R;
 import com.qsoft.ondio.customui.ArrayAdapterCustom;
 import com.qsoft.ondio.data.dao.HomeContract;
 
-/**
- * Created with IntelliJ IDEA.
- * User: RuaTre_IT
- * Date: 11/4/13
- * Time: 11:28 PM
- * To change this template use File | Settings | File Templates.
- */
 public class HomeListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
     String user_id;
@@ -87,8 +82,12 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
-//        Uri uri = ContentUris.withAppendedId(HomeContract.CONTENT_URI, Long.parseLong(user_id));
-        return new CursorLoader(getActivity(), HomeContract.CONTENT_URI,
+        if(user_id.equals("586"))
+        {
+            user_id= "115";
+        }
+        Uri uri = ContentUris.withAppendedId(HomeContract.CONTENT_URI, Long.parseLong(user_id));
+        return new CursorLoader(getActivity(), uri,
                 PROJECTION, null, null, null);
     }
 

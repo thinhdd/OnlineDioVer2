@@ -32,6 +32,7 @@ public class MainActivity extends Activity
         setUpListenerController();
     }
 
+
     private void setupUI()
     {
         btLogin = (Button) findViewById(R.id.btLogin);
@@ -79,11 +80,13 @@ public class MainActivity extends Activity
                             if (null != authToken)
                             {
                                 String accountName = bnd.getString(AccountManager.KEY_ACCOUNT_NAME);
-                                String user_id = bnd.getString(Common.PARAM_USER_ID);
+                                Account account = new Account(accountName, Common.ARG_ACCOUNT_TYPE);
+                                String user_id = mAccountManager.getUserData(account,Common.USERDATA_USER_OBJ_ID);
                                 mConnectedAccount = new Account(accountName, Common.ARG_ACCOUNT_TYPE);
                                 SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                                 SharedPreferences.Editor editor = setting.edit();
                                 editor.putString("accountName", accountName);
+                                editor.putString("user_id", user_id);
                                 editor.commit();
                                 Intent intent = new Intent(getApplicationContext(), SlidebarActivity.class);
                                 startActivity(intent);
@@ -92,7 +95,7 @@ public class MainActivity extends Activity
                             else
                             {
                                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                intent.putExtra("IS_ADDING_ACCOUNT", true);
+//                                intent.putExtra("IS_ADDING_ACCOUNT", true);
                                 startActivity(intent);
                             }
                         }
