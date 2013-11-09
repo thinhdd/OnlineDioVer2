@@ -21,6 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
             "CREATE TABLE " + HOME_TABLE_NAME + " (" +
                     HomeContract._ID +
                     " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    HomeContract.ACCOUNT_ID +" TEXT, " +
                     HomeContract.ID + " TEXT, " +
                     HomeContract.USER_ID + " TEXT, " +
                     HomeContract.TITLE + " TEXT, " +

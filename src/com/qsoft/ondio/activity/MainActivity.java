@@ -20,7 +20,6 @@ public class MainActivity extends Activity
     private Button btLogin;
     private AccountManager mAccountManager;
     private static String authToken = null;
-    private Account mConnectedAccount;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -82,7 +81,6 @@ public class MainActivity extends Activity
                                 String accountName = bnd.getString(AccountManager.KEY_ACCOUNT_NAME);
                                 Account account = new Account(accountName, Common.ARG_ACCOUNT_TYPE);
                                 String user_id = mAccountManager.getUserData(account,Common.USERDATA_USER_OBJ_ID);
-                                mConnectedAccount = new Account(accountName, Common.ARG_ACCOUNT_TYPE);
                                 SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                                 SharedPreferences.Editor editor = setting.edit();
                                 editor.putString("accountName", accountName);
@@ -90,7 +88,6 @@ public class MainActivity extends Activity
                                 editor.commit();
                                 Intent intent = new Intent(getApplicationContext(), SlidebarActivity.class);
                                 startActivity(intent);
-
                             }
                             else
                             {
@@ -98,6 +95,7 @@ public class MainActivity extends Activity
 //                                intent.putExtra("IS_ADDING_ACCOUNT", true);
                                 startActivity(intent);
                             }
+                            finish();
                         }
                         catch (Exception e)
                         {

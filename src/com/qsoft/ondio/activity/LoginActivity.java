@@ -3,6 +3,7 @@ package com.qsoft.ondio.activity;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,7 +27,8 @@ import com.qsoft.ondio.model.User;
 import com.qsoft.ondio.util.Common;
 import com.qsoft.ondio.util.NetworkAvailable;
 
-public class LoginActivity extends AccountAuthenticatorActivity {
+public class LoginActivity extends AccountAuthenticatorActivity
+{
     private static final String TAG = "LoginActivity";
     private AccountManager mAccountManager;
     private String mAuthTokenType;
@@ -37,21 +40,33 @@ public class LoginActivity extends AccountAuthenticatorActivity {
     private EditText etEmail;
     private EditText etPassword;
 
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         mAccountManager = AccountManager.get(getBaseContext());
         mAuthTokenType = getIntent().getStringExtra(Common.ARG_AUTH_TYPE);
-        if (mAuthTokenType == null) {
+        if (mAuthTokenType == null)
+        {
             mAuthTokenType = Common.AUTHTOKEN_TYPE_FULL_ACCESS;
         }
-
+        syncAccount();
         setUpUI();
         setUpListenerController();
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
-    private void setUpUI() {
+    private void syncAccount()
+    {
+        Account[] accounts = mAccountManager.getAccountsByType(Common.ARG_ACCOUNT_TYPE);
+        for (Account account : accounts)
+        {
+            mAccountManager.removeAccount(account, null, null);
+        }
+    }
+
+    private void setUpUI()
+    {
         etEmail = (EditText) findViewById(R.id.login_etEmail);
         etPassword = (EditText) findViewById(R.id.login_etPassword);
         btLogin = (Button) findViewById(R.id.login_btNext);
@@ -59,16 +74,20 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         tvForgotPassword = (TextView) findViewById(R.id.login_tvForgotPassword);
     }
 
-    private void setUpListenerController() {
+    private void setUpListenerController()
+    {
         etEmail.addTextChangedListener(textChangeListener);
         etPassword.addTextChangedListener(textChangeListener);
         btLogin.setEnabled(false);
         btLogin.setOnClickListener(onClickListener);
         btBack.setOnClickListener(onClickListener);
         tvForgotPassword.setOnClickListener(onClickListener);
-        etPassword.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+        etPassword.setOnEditorActionListener(new EditText.OnEditorActionListener()
+        {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE))
+                {
                     Log.i(TAG, "Enter pressed");
                     doLogin();
                 }
@@ -77,69 +96,90 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         });
     }
 
-    private void doLogin() {
-//        if (!checkNetwork())
-//        {
-//            MyDialog.showMessageDialog(this, getString(R.string.tittle_login_error), getString(R.string.error_connect_network));
-//        }
-//        else
-        if (!checkTimeout()) {
+    private void doLogin()
+    {
+        if (!checkNetwork())
+        {
+            MyDialog.showMessageDialog(this, getString(R.string.tittle_login_error), getString(R.string.error_connect_network));
+        }
+        else if (!checkTimeout())
+        {
             MyDialog.showMessageDialog(this, getString(R.string.tittle_login_error), getString(R.string.connection_timeout));
-        } else if (!checkUnrecognized()) {
+        }
+        else if (!checkUnrecognized())
+        {
             MyDialog.showMessageDialog(this, getString(R.string.tittle_login_error), getString(R.string.service_unrecognized));
-        } else {
+        }
+        else
+        {
             checkLogin();
+
         }
 
     }
 
-    private boolean checkUnrecognized() {
+    private boolean checkUnrecognized()
+    {
         return true;
     }
 
-    private boolean checkTimeout() {
+    private boolean checkTimeout()
+    {
         return true;
     }
 
-    private boolean checkNetwork() {
+    private boolean checkNetwork()
+    {
         NetworkAvailable network = new NetworkAvailable(this);
         return network.isEnabled();
     }
 
 
-    private void doBack() {
+    private void doBack()
+    {
         startActivity(new Intent(this, MainActivity.class));
     }
 
-    private void doForgotPassword() {
+    private void doForgotPassword()
+    {
         // do forgot password here
     }
 
-    private final TextWatcher textChangeListener = new TextWatcher() {
+    private final TextWatcher textChangeListener = new TextWatcher()
+    {
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        public void onTextChanged(CharSequence s, int start, int before, int count)
+        {
         }
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after)
+        {
         }
 
         @Override
-        public void afterTextChanged(Editable s) {
-            if (etEmail.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty()) {
+        public void afterTextChanged(Editable s)
+        {
+            if (etEmail.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty())
+            {
                 btLogin.setBackgroundResource(R.drawable.login_login_visible);
                 btLogin.setEnabled(false);
-            } else {
+            }
+            else
+            {
                 btLogin.setBackgroundResource(R.drawable.login_login);
                 btLogin.setEnabled(true);
             }
         }
     };
 
-    private final View.OnClickListener onClickListener = new View.OnClickListener() {
+    private final View.OnClickListener onClickListener = new View.OnClickListener()
+    {
         @Override
-        public void onClick(View view) {
-            switch (view.getId()) {
+        public void onClick(View view)
+        {
+            switch (view.getId())
+            {
                 case R.id.login_btNext:
                     doLogin();
                     break;
@@ -154,22 +194,28 @@ public class LoginActivity extends AccountAuthenticatorActivity {
     };
 
 
-    public void checkLogin() {
+    public void checkLogin()
+    {
         Log.d(TAG, "> Submit");
+
         final String userName = etEmail.getText().toString();
         final String password = etPassword.getText().toString();
 
-        new AsyncTask<String, Void, Intent>() {
+        new AsyncTask<String, Void, Intent>()
+        {
 
             @Override
-            protected Intent doInBackground(String... params) {
+            protected Intent doInBackground(String... params)
+            {
                 Log.d(TAG, "> Started authenticating");
 
                 Bundle data = new Bundle();
-                try {
+                try
+                {
 
                     User user = Common.sServerAuthenticate.userSignIn(userName, password, mAuthTokenType);
-                    if (user.getAccess_token() != null) {
+                    if (user.getAccess_token() != null)
+                    {
                         data.putString(AccountManager.KEY_ACCOUNT_NAME, userName);
                         data.putString(AccountManager.KEY_ACCOUNT_TYPE, Common.ARG_ACCOUNT_TYPE);
                         data.putString(AccountManager.KEY_AUTHTOKEN, user.getAccess_token());
@@ -182,10 +228,14 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                         data.putBundle(AccountManager.KEY_USERDATA, userData);
 
                         data.putString(Common.PARAM_USER_PASS, password);
-                    } else {
+                    }
+                    else
+                    {
                         data.putString(Common.KEY_ERROR_MESSAGE, "Account is not exists");
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                     data.putString(Common.KEY_ERROR_MESSAGE, e.getMessage());
                 }
                 final Intent res = new Intent();
@@ -194,17 +244,28 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             }
 
             @Override
-            protected void onPostExecute(Intent intent) {
-                if (intent.hasExtra(Common.KEY_ERROR_MESSAGE)) {
+            protected void onPostExecute(Intent intent)
+            {
+                if (intent.hasExtra(Common.KEY_ERROR_MESSAGE))
+                {
                     Toast.makeText(getBaseContext(), intent.getStringExtra(Common.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
-                } else {
+                }
+                else
+                {
                     finishLogin(intent);
                 }
             }
         }.execute();
     }
 
-    private void finishLogin(Intent intentContenxt) {
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs)
+    {
+        return super.onCreateView(name, context, attrs);
+    }
+
+    private void finishLogin(Intent intentContenxt)
+    {
 
         String accountName = intentContenxt.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
         String accountPassword = intentContenxt.getStringExtra(Common.PARAM_USER_PASS);
@@ -214,8 +275,9 @@ public class LoginActivity extends AccountAuthenticatorActivity {
 //        {
         String authtoken = intentContenxt.getStringExtra(AccountManager.KEY_AUTHTOKEN);
         String authtokenType = mAuthTokenType;
-        intent = new Intent(getBaseContext(), SlidebarActivity.class);
+        intent = new Intent(LoginActivity.this, SlidebarActivity.class);
         startActivity(intent);
+        finish();
         mAccountManager.addAccountExplicitly(account, accountPassword, intentContenxt.getBundleExtra(AccountManager.KEY_USERDATA));
         mAccountManager.setAuthToken(account, authtokenType, authtoken);
 
@@ -230,7 +292,8 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         setResult(RESULT_OK, intentContenxt);
     }
 
-    private void saveInfo(String access_token, String account, String user_id) {
+    private void saveInfo(String access_token, String account, String user_id)
+    {
         SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = setting.edit();
         editor.putString("authToken", access_token);

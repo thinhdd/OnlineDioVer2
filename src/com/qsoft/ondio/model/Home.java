@@ -6,6 +6,7 @@ import com.qsoft.ondio.data.dao.HomeContract;
 
 public class Home
 {
+    public String account_id;
 
     public final String id;
 
@@ -40,10 +41,11 @@ public class Home
     public final String avatar;
 
 
-    public Home(String id, String user_id, String title, String thumbnail, String sound_path, String description
+    public Home(String account_id, String id, String user_id, String title, String thumbnail, String sound_path, String description
             , String duration, String played, String created_at, String updated_at, String likes, String viewed
             , String comments, String username, String display_name, String avatar)
     {
+        this.account_id = account_id;
         this.id = id;
         this.user_id = user_id;
         this.title = title;
@@ -60,6 +62,17 @@ public class Home
         this.username = username;
         this.display_name = display_name;
         this.avatar = avatar;
+    }
+
+
+    public String getAccount_id()
+    {
+        return account_id;
+    }
+
+    public void setAccount_id(String account_id)
+    {
+        this.account_id = account_id;
     }
 
 
@@ -146,6 +159,7 @@ public class Home
     public ContentValues getContentValues()
     {
         ContentValues values = new ContentValues();
+        values.put(HomeContract.ACCOUNT_ID,account_id);
         values.put(HomeContract.ID, id);
         values.put(HomeContract.USER_ID, user_id);
         values.put(HomeContract.TITLE, title);
@@ -167,6 +181,7 @@ public class Home
 
     public static Home fromCursor(Cursor cursor)
     {
+        String account_id = cursor.getString(cursor.getColumnIndex(HomeContract.ACCOUNT_ID));
         String id = cursor.getString(cursor.getColumnIndex(HomeContract.ID));
         String user_id = cursor.getString(cursor.getColumnIndex(HomeContract.USER_ID));
         String title = cursor.getString(cursor.getColumnIndex(HomeContract.TITLE));
@@ -184,7 +199,7 @@ public class Home
         String display_name = cursor.getString(cursor.getColumnIndex(HomeContract.DISPLAY_NAME));
         String avatar = cursor.getString(cursor.getColumnIndex(HomeContract.AVATAR));
 
-        return new Home(id, user_id, title, thumbnail, sound_path, description
+        return new Home(account_id, id, user_id, title, thumbnail, sound_path, description
                 , duration, played, created_at, updated_at, likes, viewed
                 , comments, username, display_name, avatar);
     }

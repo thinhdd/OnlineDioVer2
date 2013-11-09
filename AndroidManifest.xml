@@ -33,6 +33,7 @@
                   android:screenOrientation="portrait"/>
         <activity android:name=".activity.SlidebarActivity"
                   android:theme="@android:style/Theme.Black.NoTitleBar"
+                  android:alwaysRetainTaskState="true"
                   android:screenOrientation="portrait"/>
         <activity android:name=".activity.InputCommentActivity"
                   android:theme="@android:style/Theme.Black.NoTitleBar"

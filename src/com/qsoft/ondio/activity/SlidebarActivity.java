@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.customui.ArrayAdapterListOption;
 import com.qsoft.ondio.fragment.HomeFragment;
@@ -48,6 +49,7 @@ public class SlidebarActivity extends FragmentActivity
     private RelativeLayout slidebar_rlProfile;
     FragmentTransaction fragmentTransaction;
     AccountManager mAccountManager;
+    Boolean lastBack = false;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -80,6 +82,25 @@ public class SlidebarActivity extends FragmentActivity
         lvOption.setOnItemClickListener(onItemClickListener);
     }
 
+//    @Override
+//    public void onBackPressed()
+//    {
+//        if (getFragmentManager().getBackStackEntryCount() > 1)
+//        {
+//            super.onBackPressed();
+//        }
+//        else
+//        {
+//            if (lastBack)
+//            {
+//                finish();
+//            }
+//            Toast toast = Toast.makeText(this, "Press Back again to exit program", Toast.LENGTH_SHORT);
+//            toast.show();
+//            lastBack = true;
+//        }
+//    }
+
     private final ListView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener()
     {
         @Override
@@ -103,14 +124,21 @@ public class SlidebarActivity extends FragmentActivity
 
     private void doSignOut()
     {
-        SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        String accountName = setting.getString("account", "n/a");
-        Account account = new Account(accountName, Common.ARG_ACCOUNT_TYPE);
-        String token = mAccountManager.peekAuthToken(account, Common.ARG_ACCOUNT_TYPE);
-        mAccountManager.invalidateAuthToken(Common.ARG_ACCOUNT_TYPE, token);
-//        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-////        intent.putExtra("IS_ADDING_ACCOUNT", true);
-//        startActivity(intent);
+//        SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+//        String accountName = setting.getString("account", "n/a");
+//        Account account = new Account(accountName, Common.ARG_ACCOUNT_TYPE);
+//        String token = mAccountManager.peekAuthToken(account, Common.ARG_ACCOUNT_TYPE);
+//        mAccountManager.invalidateAuthToken(Common.ARG_ACCOUNT_TYPE, token);
+        Account[] accounts = mAccountManager.getAccountsByType(Common.ARG_ACCOUNT_TYPE);
+        for(Account account : accounts)
+        {
+            mAccountManager.removeAccount(account,null,null);
+        }
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//        intent.putExtra("IS_ADDING_ACCOUNT", true);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
         finish();
     }
 

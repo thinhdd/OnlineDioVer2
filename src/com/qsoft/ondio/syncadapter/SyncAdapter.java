@@ -85,6 +85,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
 
         String authToken = mAccountManager.peekAuthToken(account,
                 Common.AUTHTOKEN_TYPE_FULL_ACCESS);
+        String account_id = mAccountManager.getUserData(account,Common.USERDATA_USER_OBJ_ID);
         final ArrayList<Home> entries = feedParser.getShowsFeedHome(account, mAccountManager, authToken);
         Log.i(TAG, "Parsing complete. Found " + entries.size() + " entries");
 
@@ -93,13 +94,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
         HashMap<String, Home> entryMap = new HashMap<String, Home>();
         for (Home e : entries)
         {
+            e.setAccount_id(account_id);
             entryMap.put(e.getId(), e);
         }
         Log.i(TAG, "Fetching local entries for merge");
-        Uri uri = HomeContract.CONTENT_URI; // Get all entries
-        String selection = HomeContract.USER_ID + "='" + entries.get(0).getUser_id() + "'";
+        Uri uri = ContentUris.withAppendedId(HomeContract.CONTENT_URI, Long.parseLong(account_id));
         Cursor c = contentResolver.query(uri, null
-                , selection, null, null);
+                , null, null, null);
         Log.i(TAG, "Found " + c.getCount() + " local entries. Computing merge solution...");
 
         // Find stale data

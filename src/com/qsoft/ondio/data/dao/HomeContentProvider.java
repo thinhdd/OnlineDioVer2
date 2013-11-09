@@ -62,7 +62,7 @@ public class HomeContentProvider extends ContentProvider
             {
                 SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
                 builder.setTables(DatabaseHelper.HOME_TABLE_NAME);
-                builder.appendWhere(HomeContract.USER_ID + "="
+                builder.appendWhere(HomeContract.ACCOUNT_ID + "="
                         + uri.getLastPathSegment());
                 Cursor cursor = builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
                 cursor.setNotificationUri(getContext().getContentResolver(), HomeContract.CONTENT_URI);

@@ -18,8 +18,9 @@ import com.qsoft.ondio.data.dao.HomeContract;
 
 public class HomeListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
-    String user_id;
+    String account_id;
     private static final String[] PROJECTION = new String[]{
+            HomeContract.ACCOUNT_ID,
             HomeContract._ID,
             HomeContract.USER_ID,
             HomeContract.TITLE,
@@ -55,7 +56,7 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
         super.onActivityCreated(savedInstanceState);
 
         SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        user_id = setting.getString("user_id", "n/a");
+        account_id = setting.getString("user_id", "n/a");
         setEmptyText("No data");
 
         // Create an empty adapter we will use to display the loaded data.
@@ -82,11 +83,7 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
-        if(user_id.equals("586"))
-        {
-            user_id= "115";
-        }
-        Uri uri = ContentUris.withAppendedId(HomeContract.CONTENT_URI, Long.parseLong(user_id));
+        Uri uri = ContentUris.withAppendedId(HomeContract.CONTENT_URI, Long.parseLong(account_id));
         return new CursorLoader(getActivity(), uri,
                 PROJECTION, null, null, null);
     }

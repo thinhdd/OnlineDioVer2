@@ -25,21 +25,21 @@ public class Common
 
     public static final String AUTHTOKEN_TYPE_FULL_ACCESS = "Full access";
     public static final String AUTHTOKEN_TYPE_FULL_ACCESS_LABEL = "Full access to an Udinic account";
-    public static final int COLUMN_FEED_ID = 1;
-    public static final int COLUMN_USER_ID = 2;
-    public static final int COLUMN_TITLE = 3;
-    public static final int COLUMN_THUMBNAIL = 4;
-    public static final int COLUMN_DESCRIPTION = 5;
-    public static final int COLUMN_SOUND_PATH = 6;
-    public static final int COLUMN_DURATION = 7;
-    public static final int COLUMN_PLAYED = 8;
-    public static final int COLUMN_CREATED_AT = 9;
-    public static final int COLUMN_UPDATED_AT = 10;
-    public static final int COLUMN_LIKES = 11;
-    public static final int COLUMN_VIEWED = 12;
-    public static final int COLUMN_COMMENTS = 13;
-    public static final int COLUMN_USERNAME = 14;
-    public static final int COLUMN_DISPLAY_NAME = 15;
-    public static final int COLUMN_AVATAR = 16;
+    public static final int COLUMN_FEED_ID = 2;
+    public static final int COLUMN_USER_ID = 3;
+    public static final int COLUMN_TITLE = 4;
+    public static final int COLUMN_THUMBNAIL = 5;
+    public static final int COLUMN_DESCRIPTION = 6;
+    public static final int COLUMN_SOUND_PATH = 7;
+    public static final int COLUMN_DURATION = 8;
+    public static final int COLUMN_PLAYED = 9;
+    public static final int COLUMN_CREATED_AT = 10;
+    public static final int COLUMN_UPDATED_AT = 11;
+    public static final int COLUMN_LIKES = 12;
+    public static final int COLUMN_VIEWED = 13;
+    public static final int COLUMN_COMMENTS = 14;
+    public static final int COLUMN_USERNAME = 15;
+    public static final int COLUMN_DISPLAY_NAME = 16;
+    public static final int COLUMN_AVATAR = 17;
 
 }
