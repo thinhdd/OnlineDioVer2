@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import com.qsoft.ondio.activity.LoginActivity;
+import com.qsoft.ondio.activity.LoginActivity_;
 import com.qsoft.ondio.model.User;
 import com.qsoft.ondio.util.Common;
 
@@ -29,7 +29,7 @@ public class UdinicAuthenticator extends AbstractAccountAuthenticator
     {
         Log.d("udinic", TAG + "> addAccount");
 
-        final Intent intent = new Intent(mContext, LoginActivity.class);
+        final Intent intent = new Intent(mContext, LoginActivity_.class);
         intent.putExtra(Common.ARG_ACCOUNT_TYPE, accountType);
         intent.putExtra(Common.ARG_AUTH_TYPE, authTokenType);
         intent.putExtra(Common.ARG_IS_ADDING_NEW_ACCOUNT, true);
@@ -98,7 +98,7 @@ public class UdinicAuthenticator extends AbstractAccountAuthenticator
             return result;
         }
 
-        final Intent intent = new Intent(mContext, LoginActivity.class);
+        final Intent intent = new Intent(mContext, LoginActivity_.class);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         intent.putExtra(Common.ARG_ACCOUNT_TYPE, account.type);
         intent.putExtra(Common.ARG_AUTH_TYPE, authTokenType);

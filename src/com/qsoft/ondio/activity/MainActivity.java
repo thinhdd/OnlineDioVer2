@@ -9,59 +9,34 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import com.googlecode.androidannotations.annotations.*;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.util.Common;
 
+
+@EActivity(R.layout.main)
 public class MainActivity extends Activity
 {
-    private Button btLogin;
-    private AccountManager mAccountManager;
-    private static String authToken = null;
+    @ViewById(R.id.btLogin)
+    public Button btLogin;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState)
+    @SystemService
+    AccountManager accountManager;
+
+    @AfterViews
+    void setUpView()
     {
-        super.onCreate(savedInstanceState);
-        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0)
+        {
             finish();
             return;
         }
-        setContentView(R.layout.main);
-        mAccountManager = AccountManager.get(this);
-        setupUI();
-        setUpListenerController();
     }
 
-
-    private void setupUI()
-    {
-        btLogin = (Button) findViewById(R.id.btLogin);
-    }
-
-
-    private void setUpListenerController()
-    {
-        btLogin.setOnClickListener(onClickListener);
-    }
-
-    private final View.OnClickListener onClickListener = new View.OnClickListener()
-    {
-        @Override
-        public void onClick(View view)
-        {
-            switch (view.getId())
-            {
-                case R.id.btLogin:
-                    doLogin();
-                    break;
-            }
-        }
-    };
-
-    private void doLogin()
+    @Click(R.id.btLogin)
+    void doLogin()
     {
         getTokenForAccountCreateIfNeeded(Common.ARG_ACCOUNT_TYPE, Common.AUTHTOKEN_TYPE_FULL_ACCESS);
         finish();
@@ -69,7 +44,7 @@ public class MainActivity extends Activity
 
     private void getTokenForAccountCreateIfNeeded(String accountType, String authTokenType)
     {
-        final AccountManagerFuture<Bundle> future = mAccountManager.getAuthTokenByFeatures(accountType, authTokenType, null, this, null, null,
+        final AccountManagerFuture<Bundle> future = accountManager.getAuthTokenByFeatures(accountType, authTokenType, null, this, null, null,
                 new AccountManagerCallback<Bundle>()
                 {
                     @Override
@@ -79,12 +54,12 @@ public class MainActivity extends Activity
                         try
                         {
                             bnd = future.getResult();
-                            authToken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
+                            String authToken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
                             if (null != authToken)
                             {
                                 String accountName = bnd.getString(AccountManager.KEY_ACCOUNT_NAME);
                                 Account account = new Account(accountName, Common.ARG_ACCOUNT_TYPE);
-                                String user_id = mAccountManager.getUserData(account,Common.USERDATA_USER_OBJ_ID);
+                                String user_id = accountManager.getUserData(account,Common.USERDATA_USER_OBJ_ID);
                                 SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                                 SharedPreferences.Editor editor = setting.edit();
                                 editor.putString("accountName", accountName);
@@ -95,7 +70,7 @@ public class MainActivity extends Activity
                             }
                             else
                             {
-                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                Intent intent = new Intent(getApplicationContext(), LoginActivity_.class);
 //                                intent.putExtra("IS_ADDING_ACCOUNT", true);
                                 startActivity(intent);
                             }
@@ -127,4 +102,5 @@ public class MainActivity extends Activity
             }
         });
     }
+
 }
