@@ -25,6 +25,10 @@ public class MainActivity extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+            finish();
+            return;
+        }
         setContentView(R.layout.main);
         mAccountManager = AccountManager.get(this);
         setupUI();
@@ -60,7 +64,7 @@ public class MainActivity extends Activity
     private void doLogin()
     {
         getTokenForAccountCreateIfNeeded(Common.ARG_ACCOUNT_TYPE, Common.AUTHTOKEN_TYPE_FULL_ACCESS);
-
+        finish();
     }
 
     private void getTokenForAccountCreateIfNeeded(String accountType, String authTokenType)

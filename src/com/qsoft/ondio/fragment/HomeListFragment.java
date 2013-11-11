@@ -1,17 +1,21 @@
 package com.qsoft.ondio.fragment;
 
 import android.content.ContentUris;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
+import android.widget.ListView;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.customui.ArrayAdapterCustom;
 import com.qsoft.ondio.data.dao.HomeContract;
@@ -79,6 +83,15 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
         getLoaderManager().initLoader(0, null, this);
     }
 
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id)
+    {
+        super.onListItemClick(l, v, position, id);
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.content_frame, new ProgramFragment(), "ProgramFragment");
+        ft.addToBackStack("ProgramFragment");
+        ft.commit();
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)

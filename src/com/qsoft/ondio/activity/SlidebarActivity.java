@@ -82,24 +82,21 @@ public class SlidebarActivity extends FragmentActivity
         lvOption.setOnItemClickListener(onItemClickListener);
     }
 
-//    @Override
-//    public void onBackPressed()
-//    {
-//        if (getFragmentManager().getBackStackEntryCount() > 1)
-//        {
-//            super.onBackPressed();
-//        }
-//        else
-//        {
-//            if (lastBack)
-//            {
-//                finish();
-//            }
-//            Toast toast = Toast.makeText(this, "Press Back again to exit program", Toast.LENGTH_SHORT);
-//            toast.show();
-//            lastBack = true;
-//        }
-//    }
+    @Override
+    public void onBackPressed()
+    {
+
+        if (lastBack)
+        {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            startActivity(intent);
+        }
+        Toast toast = Toast.makeText(this, "Press Back again to exit program", Toast.LENGTH_SHORT);
+        toast.show();
+        lastBack = true;
+
+    }
 
     private final ListView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener()
     {
@@ -130,13 +127,13 @@ public class SlidebarActivity extends FragmentActivity
 //        String token = mAccountManager.peekAuthToken(account, Common.ARG_ACCOUNT_TYPE);
 //        mAccountManager.invalidateAuthToken(Common.ARG_ACCOUNT_TYPE, token);
         Account[] accounts = mAccountManager.getAccountsByType(Common.ARG_ACCOUNT_TYPE);
-        for(Account account : accounts)
+        for (Account account : accounts)
         {
-            mAccountManager.removeAccount(account,null,null);
+            mAccountManager.removeAccount(account, null, null);
         }
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 //        intent.putExtra("IS_ADDING_ACCOUNT", true);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
