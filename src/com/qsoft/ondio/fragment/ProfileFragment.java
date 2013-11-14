@@ -2,6 +2,7 @@ package com.qsoft.ondio.fragment;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.googlecode.androidannotations.annotations.*;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.activity.SlidebarActivity;
 import com.qsoft.ondio.cache.Image;
@@ -28,62 +30,75 @@ import com.qsoft.ondio.dialog.MyDialog;
 import com.qsoft.ondio.model.Profile;
 import com.qsoft.ondio.model.ProfileResponse;
 import com.qsoft.ondio.util.Common;
+import com.qsoft.ondio.util.ShareInfoAccount;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+@EFragment(R.layout.profile)
 public class ProfileFragment extends Fragment
 {
     private static final String TAG = "ProfileFragment";
-    private EditText etProfileName;
-    private EditText etFullName;
-    private EditText etPhoneNo;
-    private EditText etBirthday;
-    private Button btMale;
-    private Button btFemale;
-    private EditText etCountry;
-    private Spinner spCountry;
-    private EditText etDescription;
-    private ImageView ivAvatar;
-    private ImageView ivCoverImage;
-    private ScrollView scroll;
-    private Button btSave;
-    private Button btMenu;
 
-    private static final int MALE = 0;
-    private static final int FEMALE = 1;
+    @ViewById(R.id.profile_etProfileName)
+    public EditText etProfileName;
+    @ViewById(R.id.profile_etFullName)
+    public EditText etFullName;
+    @ViewById(R.id.profile_etPhoneNo)
+    public EditText etPhoneNo;
+    @ViewById(R.id.profile_etBirthday)
+    public EditText etBirthday;
+    @ViewById(R.id.profile_btMale)
+    public Button btMale;
+    @ViewById(R.id.profile_btFemale)
+    public Button btFemale;
+    @ViewById(R.id.profile_etCountry)
+    public EditText etCountry;
+    @ViewById(R.id.profile_spCountry)
+    public Spinner spCountry;
+    @ViewById(R.id.profile_etDescription)
+    public EditText etDescription;
+    @ViewById(R.id.profile_ivAvatar)
+    public ImageView ivAvatar;
+    @ViewById(R.id.profile_ivCoverImage)
+    public ImageView ivCoverImage;
+    @ViewById(R.id.profile_svScroll)
+    public ScrollView scroll;
+    @ViewById(R.id.profile_btSave)
+    public Button btSave;
+    @ViewById(R.id.profile_btMenu)
+    public Button btMenu;
+
+
     private static int gender;
-    private static final int REQUEST_CODE_CAMERA_TAKE_PICTURE = 999;
-    private static final int REQUEST_CODE_RESULT_LOAD_IMAGE = 888;
-    private static final int AVATAR_CODE = 0;
-    private static final int COVER_IMAGE_CODE = 1;
+
     private static int code;
     private String token;
     private String user_id;
-    private AccountManager mAccountManager;
+    @SystemService
+    AccountManager mAccountManager;
+
+    @Bean
+    ShareInfoAccount infoAccount;
+
     private Account account;
 
     private Image image;
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @AfterViews
+    void setUpProfileFragment()
     {
-        View view = inflater.inflate(R.layout.profile, null);
-        setUpUI(view);
         setAccountCurrent();
         image = new Image(getActivity());
         getDataToLocalDB();
         doSetupDataToView();
         setUpListenerController();
-        return view;
     }
 
     private void setAccountCurrent()
     {
-        mAccountManager = AccountManager.get(getActivity());
-        SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String accountName = setting.getString("account", "n/a");
-        account = new Account(accountName, Common.ARG_ACCOUNT_TYPE);
+        account = infoAccount.getAccount();
+        user_id= infoAccount.getUser_id();
     }
 
     private void doSetupDataToView()
@@ -122,24 +137,6 @@ public class ProfileFragment extends Fragment
         btMenu.setOnClickListener(onClickListener);
     }
 
-    private void setUpUI(View view)
-    {
-        etProfileName = (EditText) view.findViewById(R.id.profile_etProfileName);
-        etFullName = (EditText) view.findViewById(R.id.profile_etFullName);
-        etPhoneNo = (EditText) view.findViewById(R.id.profile_etPhoneNo);
-        etBirthday = (EditText) view.findViewById(R.id.profile_etBirthday);
-        btMale = (Button) view.findViewById(R.id.profile_btMale);
-        btFemale = (Button) view.findViewById(R.id.profile_btFemale);
-        etCountry = (EditText) view.findViewById(R.id.profile_etCountry);
-        spCountry = (Spinner) view.findViewById(R.id.profile_spCountry);
-        etDescription = (EditText) view.findViewById(R.id.profile_etDescription);
-        ivAvatar = (ImageView) view.findViewById(R.id.profile_ivAvatar);
-        ivCoverImage = (ImageView) view.findViewById(R.id.profile_ivCoverImage);
-        scroll = (ScrollView) view.findViewById(R.id.profile_svScroll);
-        btSave = (Button) view.findViewById(R.id.profile_btSave);
-        btMenu = (Button) view.findViewById(R.id.profile_btMenu);
-    }
-
     private final View.OnClickListener onClickListener = new View.OnClickListener()
     {
         @Override
@@ -160,10 +157,10 @@ public class ProfileFragment extends Fragment
                     setCountry();
                     break;
                 case R.id.profile_btMale:
-                    setGender(MALE);
+                    setGender(Common.MALE);
                     break;
                 case R.id.profile_btFemale:
-                    setGender(FEMALE);
+                    setGender(Common.FEMALE);
                     break;
                 case R.id.profile_etDescription:
                     scroll.fullScroll(ScrollView.FOCUS_DOWN);
@@ -233,13 +230,13 @@ public class ProfileFragment extends Fragment
 
     private void setCoverImage()
     {
-        code = COVER_IMAGE_CODE;
+        code = Common.COVER_IMAGE_CODE;
         MyDialog.showSetImageDialog(getActivity(), getString(R.string.dialog_tittle_coverimage));
     }
 
     private void setAvatar()
     {
-        code = AVATAR_CODE;
+        code = Common.AVATAR_CODE;
         MyDialog.showSetImageDialog(getActivity(), getString(R.string.dialog_tittle_avatar));
     }
 
@@ -247,13 +244,13 @@ public class ProfileFragment extends Fragment
     {
         switch (gender)
         {
-            case MALE:
-                this.gender = 2;
+            case Common.MALE:
+                ProfileFragment.gender = 2;
                 btMale.setBackgroundResource(R.drawable.profile_male);
                 btFemale.setBackgroundResource(R.drawable.profile_female_visible);
                 break;
-            case FEMALE:
-                this.gender = 1;
+            case Common.FEMALE:
+                ProfileFragment.gender = 1;
                 btFemale.setBackgroundResource(R.drawable.profile_female);
                 btMale.setBackgroundResource(R.drawable.profile_male_visible);
                 break;
@@ -304,13 +301,13 @@ public class ProfileFragment extends Fragment
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         Log.i(TAG, "onActivityResult");
-        if (resultCode == getActivity().RESULT_OK && null != data)
+        if (resultCode == Activity.RESULT_OK && null != data)
         {
-            if (requestCode == REQUEST_CODE_CAMERA_TAKE_PICTURE)
+            if (requestCode == Common.REQUEST_CODE_CAMERA_TAKE_PICTURE)
             {
                 setImageFromCamera(data);
             }
-            if (requestCode == REQUEST_CODE_RESULT_LOAD_IMAGE)
+            if (requestCode == Common.REQUEST_CODE_RESULT_LOAD_IMAGE)
             {
                 setImageFromAlbum(data);
             }
@@ -329,10 +326,10 @@ public class ProfileFragment extends Fragment
         Bitmap photo = BitmapFactory.decodeFile(picturePath);
         switch (code)
         {
-            case AVATAR_CODE:
+            case Common.AVATAR_CODE:
                 makeMaskImage(ivAvatar, photo);
                 break;
-            case COVER_IMAGE_CODE:
+            case Common.COVER_IMAGE_CODE:
                 Drawable cover = new BitmapDrawable(photo);
                 ivCoverImage.setBackgroundDrawable(cover);
                 break;
@@ -344,10 +341,10 @@ public class ProfileFragment extends Fragment
         Bitmap photo = (Bitmap) data.getExtras().get("data");
         switch (code)
         {
-            case AVATAR_CODE:
+            case Common.AVATAR_CODE:
                 makeMaskImage(ivAvatar, photo);
                 break;
-            case COVER_IMAGE_CODE:
+            case Common.COVER_IMAGE_CODE:
                 Drawable cover = new BitmapDrawable(photo);
                 ivCoverImage.setBackgroundDrawable(cover);
                 break;
@@ -376,9 +373,7 @@ public class ProfileFragment extends Fragment
 
     public void getDataToLocalDB()
     {
-        SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        user_id = setting.getString("user_id", "n/a");
-        token = mAccountManager.peekAuthToken(account, Common.ARG_ACCOUNT_TYPE);
+        token = mAccountManager.peekAuthToken(account, Common.AUTHTOKEN_TYPE_FULL_ACCESS);
         ParseComServerAccessor parseComServerAccessor = new ParseComServerAccessor();
         Profile profile = parseComServerAccessor.getShowsProfile(account, mAccountManager, token, user_id);
         doSaveProfileToDB(profile);

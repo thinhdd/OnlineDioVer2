@@ -12,13 +12,6 @@ import com.qsoft.ondio.model.Comment;
 
 import java.util.ArrayList;
 
-/**
- * Created with IntelliJ IDEA.
- * User: thinhdd
- * Date: 10/18/13
- * Time: 10:03 AM
- * To change this template use File | Settings | File Templates.
- */
 public class ArrayAdapterComment extends ArrayAdapter<Comment>
 {
     private TextView tvAccount;

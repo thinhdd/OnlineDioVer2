@@ -10,6 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Click;
+import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.activity.InputCommentActivity;
 import com.qsoft.ondio.customui.ArrayAdapterComment;
@@ -22,53 +26,40 @@ import java.util.ArrayList;
  * Date: 10/18/13
  * Time: 10:03 AM
  */
+
+@EFragment(R.layout.comments)
 public class CommentFragment extends Fragment
 {
     private static final String TAG = "CommentFragment";
     private static final int REQUEST_CODE_RETURN_COMMENT = 777;
 
-    private ListView lvComment;
-    private TextView tvInputComment;
+    @ViewById(R.id.comment_lvListComment)
+    public ListView lvComment;
+    @ViewById(R.id.comments_tvInputComment)
+    public TextView tvInputComment;
+
     private ArrayList<Comment> commentList;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @AfterViews
+    void setUpCommentFragment()
     {
-        View view = inflater.inflate(R.layout.comments, null);
-        findViewById(view);
         commentList = new ArrayList<Comment>();
         setUpDataToCommentList(commentList);
-        setListenerController();
-        return view;
     }
 
-    private void setListenerController()
+    @Click(R.id.comments_tvInputComment)
+    void doExecuteEvent(View v)
     {
-        tvInputComment.setOnClickListener(onClickListener);
-    }
-
-    private View.OnClickListener onClickListener = new View.OnClickListener()
-    {
-        @Override
-        public void onClick(View v)
+        switch (v.getId())
         {
-            switch (v.getId())
-            {
-                case R.id.comments_tvInputComment:
-                    doShowInputCommentActivity();
-            }
+            case R.id.comments_tvInputComment:
+                doShowInputCommentActivity();
         }
-    };
+    }
 
     private void doShowInputCommentActivity()
     {
         getActivity().startActivityForResult(new Intent(getActivity(), InputCommentActivity.class), REQUEST_CODE_RETURN_COMMENT);
-    }
-
-    private void findViewById(View view)
-    {
-        lvComment = (ListView) view.findViewById(R.id.comment_lvListComment);
-        tvInputComment = (TextView) view.findViewById(R.id.comments_tvInputComment);
     }
 
     private void setUpDataToCommentList(ArrayList<Comment> commentList)

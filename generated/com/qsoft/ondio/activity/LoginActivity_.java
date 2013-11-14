@@ -15,7 +15,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +22,9 @@ import android.widget.TextView;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
 import com.qsoft.ondio.R.id;
 import com.qsoft.ondio.R.layout;
+import com.qsoft.ondio.controller.LoginController_;
+import com.qsoft.ondio.data.ParseComServerAccessor_;
+import com.qsoft.ondio.util.ShareInfoAccount_;
 
 public final class LoginActivity_
     extends LoginActivity
@@ -39,44 +41,20 @@ public final class LoginActivity_
 
     private void init_(Bundle savedInstanceState) {
         accountManager = ((AccountManager) this.getSystemService(Context.ACCOUNT_SERVICE));
+        shareInfoAccount = ShareInfoAccount_.getInstance_(this);
+        loginController = LoginController_.getInstance_(this);
+        parseCom = ParseComServerAccessor_.getInstance_(this);
     }
 
     private void afterSetContentView_() {
         etEmail = ((EditText) findViewById(id.login_etEmail));
+        btLogin = ((Button) findViewById(id.login_btNext));
         tvForgotPassword = ((TextView) findViewById(id.login_tvForgotPassword));
         etPassword = ((EditText) findViewById(id.login_etPassword));
         btBack = ((Button) findViewById(id.login_btBack));
-        btLogin = ((Button) findViewById(id.login_btNext));
-        {
-            View view = findViewById(id.login_btNext);
-            if (view!= null) {
-                view.setOnClickListener(new OnClickListener() {
-
-
-                    @Override
-                    public void onClick(View view) {
-                        LoginActivity_.this.doLogin();
-                    }
-
-                }
-                );
-            }
-        }
-        {
-            View view = findViewById(id.login_btBack);
-            if (view!= null) {
-                view.setOnClickListener(new OnClickListener() {
-
-
-                    @Override
-                    public void onClick(View view) {
-                        LoginActivity_.this.doBack();
-                    }
-
-                }
-                );
-            }
-        }
+        ((ShareInfoAccount_) shareInfoAccount).afterSetContentView_();
+        ((LoginController_) loginController).afterSetContentView_();
+        ((ParseComServerAccessor_) parseCom).afterSetContentView_();
         {
             final TextView view = ((TextView) findViewById(id.login_etEmail));
             if (view!= null) {

@@ -5,6 +5,7 @@
 
 package com.qsoft.ondio.activity;
 
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import com.googlecode.androidannotations.api.SdkVersionHelper;
 import com.qsoft.ondio.R.layout;
+import com.qsoft.ondio.customui.ArrayAdapterListOption_;
 
 public final class SlidebarActivity_
     extends SlidebarActivity
@@ -34,12 +36,14 @@ public final class SlidebarActivity_
     }
 
     private void init_(Bundle savedInstanceState) {
+        mAccountManager = ((AccountManager) this.getSystemService(Context.ACCOUNT_SERVICE));
+        listOption = ArrayAdapterListOption_.getInstance_(this);
     }
 
     private void afterSetContentView_() {
-        mDrawerLayout = ((DrawerLayout) findViewById(com.qsoft.ondio.R.id.drawer_layout));
-        rlLeftDrawer = ((RelativeLayout) findViewById(com.qsoft.ondio.R.id.left_drawer));
         lvOption = ((ListView) findViewById(com.qsoft.ondio.R.id.slidebar_listOption));
+        rlLeftDrawer = ((RelativeLayout) findViewById(com.qsoft.ondio.R.id.left_drawer));
+        mDrawerLayout = ((DrawerLayout) findViewById(com.qsoft.ondio.R.id.drawer_layout));
         {
             View view = findViewById(com.qsoft.ondio.R.id.slidebar_rlProfile);
             if (view!= null) {
@@ -70,6 +74,8 @@ public final class SlidebarActivity_
                 );
             }
         }
+        ((ArrayAdapterListOption_) listOption).afterSetContentView_();
+        bindAdapter();
         setUpView();
     }
 

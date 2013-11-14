@@ -1,16 +1,22 @@
 package com.qsoft.ondio.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
-/**
- * Created by Udini on 6/26/13.
- */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User implements Serializable
 {
+    @JsonProperty("access_token")
     private String access_token;
+    @JsonProperty("client_id")
     private String client_id;
+    @JsonProperty("user_id")
     private String user_id;
+    @JsonProperty("expires")
     private String expires;
+    @JsonProperty("scope")
     private String scope;
 
     public String getAccess_token()

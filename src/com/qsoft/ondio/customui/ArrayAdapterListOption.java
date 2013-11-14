@@ -5,89 +5,61 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.googlecode.androidannotations.annotations.EBean;
+import com.googlecode.androidannotations.annotations.RootContext;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.qsoft.ondio.R;
 
-public class ArrayAdapterListOption extends ArrayAdapter<String>
+@EBean
+public class ArrayAdapterListOption extends BaseAdapter
 {
-    private String[] slideBarOptions;
-    private Context context;
-    private TextView tvOption, tvSpec;
-    private ImageView ivOption;
+    final String[] slideBarOptions = {"Home", "Favorite", "Following", "Audience", "Genres", "Setting", "Help Center", "Sign Out"};
 
-    public ArrayAdapterListOption(Context context, int textViewResourceId, String[] slideBarOptions)
-    {
-        super(context, textViewResourceId, slideBarOptions);
-        this.slideBarOptions = slideBarOptions;
-        this.context = context;
+    @RootContext
+    Context context;
 
-    }
+    @ViewById(R.id.slidebar_tvOption)
+    TextView tvOption;
+
+    @ViewById(R.id.slidebar_tvSpecOption)
+    TextView tvSpec;
+
+    @ViewById(R.id.slidebar_ivOption)
+    ImageView ivOption;
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-
+        OptionItemView optionItemView;
         View v = convertView;
         if (v == null)
         {
-            LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = vi.inflate(R.layout.slidebar_listoptions, null);
-        }
-        setUpViewFindByID(v);
-        String option = slideBarOptions[position];
-        if (option.equals("Home"))
-        {
-            tvOption.setText(option);
-            ivOption.setImageResource(R.drawable.slidebar_home);
-        }
-        else if (option.equals("Favorite"))
-        {
-            tvOption.setText(option);
-            ivOption.setImageResource(R.drawable.slidebar_favorite);
-        }
-        else if (option.equals("Following"))
-        {
-            tvOption.setText(option);
-            ivOption.setImageResource(R.drawable.slidebar_following);
-        }
-        else if (option.equals("Audience"))
-        {
-            tvOption.setText(option);
-            ivOption.setImageResource(R.drawable.slidebar_audience);
-        }
-        else if (option.equals("Genres"))
-        {
-            tvOption.setText(option);
-            ivOption.setImageResource(R.drawable.slidebar_genres);
-        }
-        else if (option.equals("Setting"))
-        {
-            tvOption.setText(option);
-            ivOption.setImageResource(R.drawable.slidebar_setting);
-        }
-        else if (option.equals("Help Center"))
-        {
-            tvOption.setText(option);
-            tvSpec.setText("Support");
-            ivOption.setImageResource(R.drawable.slidebar_helpcenter);
+            optionItemView = OptionItemView_.build(context);
         }
         else
-        {
-            tvOption.setText(option);
-            ivOption.setImageResource(R.drawable.slidebar_logout);
-        }
-        if (!option.equals("Help Center"))
-        {
-            tvSpec.setText("");
-        }
-        return v;
+            optionItemView = (OptionItemView) convertView;
+        optionItemView.bind(slideBarOptions[position]);
+        return optionItemView;
     }
 
-    private void setUpViewFindByID(View v)
+    @Override
+    public int getCount()
     {
-        tvOption = (TextView) v.findViewById(R.id.slidebar_tvOption);
-        ivOption = (ImageView) v.findViewById(R.id.slidebar_ivOption);
-        tvSpec = (TextView) v.findViewById(R.id.slidebar_tvSpecOption);
+        return slideBarOptions.length;
+    }
+
+    @Override
+    public Object getItem(int position)
+    {
+        return slideBarOptions[position];
+    }
+
+    @Override
+    public long getItemId(int position)
+    {
+        return position;
     }
 }

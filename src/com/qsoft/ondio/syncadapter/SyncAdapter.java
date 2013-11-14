@@ -8,17 +8,39 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
+import com.googlecode.androidannotations.annotations.AfterInject;
+import com.googlecode.androidannotations.annotations.Bean;
+import com.googlecode.androidannotations.annotations.EBean;
+import com.googlecode.androidannotations.annotations.rest.RestService;
 import com.qsoft.ondio.data.ParseComServerAccessor;
 import com.qsoft.ondio.data.dao.HomeContract;
 import com.qsoft.ondio.model.Home;
+import com.qsoft.ondio.restservice.Interceptor;
+import com.qsoft.ondio.restservice.Services;
 import com.qsoft.ondio.util.Common;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+@EBean
 public class SyncAdapter extends AbstractThreadedSyncAdapter
 {
+    @RestService
+    Services services;
+
+    @Bean
+    Interceptor interceptor;
+
+    @AfterInject
+    public void init() {
+        List<ClientHttpRequestInterceptor> interceptors = new ArrayList<ClientHttpRequestInterceptor>();
+        interceptors.add(interceptor);
+        services.getRestTemplate().setInterceptors(interceptors);
+    }
+
     public static final String TAG = "SyncAdapter";
 
     private static final String FEED_URL = "http://113.160.50.84:1009/testing/ica467/trunk/public/home-rest";
@@ -26,9 +48,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
 
     private final ContentResolver mContentResolver;
 
-    public SyncAdapter(Context context, boolean autoInitialize)
+    public SyncAdapter(Context context)
     {
-        super(context, autoInitialize);
+        super(context, true);
         mContentResolver = context.getContentResolver();
         mAccountManager = AccountManager.get(context);
 
@@ -44,8 +66,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
         try
         {
             Log.i(TAG, "Streaming data from network: " + FEED_URL);
-            String typeSync = extras.getString(Common.TYPE_SYNC);
-            updateLocalFeedData(account, syncResult, typeSync);
+            updateLocalFeedData(account, syncResult);
         }
         catch (ParseException e)
         {
@@ -68,7 +89,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
         Log.i(TAG, "Network synchronization complete");
     }
 
-    public void updateLocalFeedData(Account account, final SyncResult syncResult, String typeSync)
+    public void updateLocalFeedData(Account account, final SyncResult syncResult)
             throws RemoteException,
             OperationApplicationException, ParseException
     {
@@ -80,13 +101,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
 
     private void doSyncHome(Account account, SyncResult syncResult) throws RemoteException, OperationApplicationException
     {
-        final ParseComServerAccessor feedParser = new ParseComServerAccessor();
         final ContentResolver contentResolver = getContext().getContentResolver();
-
-        String authToken = mAccountManager.peekAuthToken(account,
-                Common.AUTHTOKEN_TYPE_FULL_ACCESS);
-        String account_id = mAccountManager.getUserData(account,Common.USERDATA_USER_OBJ_ID);
-        final ArrayList<Home> entries = feedParser.getShowsFeedHome(account, mAccountManager, authToken);
+        String account_id = mAccountManager.getUserData(account, Common.USERDATA_USER_OBJ_ID);
+        final ArrayList<Home> entries = services.getShowsFeedHome().getHomeList();
         Log.i(TAG, "Parsing complete. Found " + entries.size() + " entries");
 
 

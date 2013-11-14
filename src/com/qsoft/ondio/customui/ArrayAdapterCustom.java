@@ -15,13 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * Created with IntelliJ IDEA.
- * User: thinhdd
- * Date: 10/12/13
- * Time: 11:08 AM
- * To change this template use File | Settings | File Templates.
- */
 public class ArrayAdapterCustom extends SimpleCursorAdapter
 {
     private TextView home_tvFeed;
@@ -71,7 +64,6 @@ public class ArrayAdapterCustom extends SimpleCursorAdapter
         {
             Date updated_date = dateFormat.parse(updated_time);
             Date currentDate = Calendar.getInstance().getTime();
-            ;
             long delta = (currentDate.getTime() - updated_date.getTime())
                     / (1000 * 60 * 60 * 24);
             if (delta > 0)

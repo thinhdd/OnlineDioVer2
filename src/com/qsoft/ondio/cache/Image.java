@@ -28,7 +28,7 @@ public class Image
     public Image(Context context)
     {
         this.fileCache = new FileCache(context, "imageList");
-        executor = Executors.newFixedThreadPool(5);//create an executor service with maximum thread is 5
+        executor = Executors.newFixedThreadPool(5);//create an executor restservice with maximum thread is 5
     }
 
     public Bitmap DisplayImage(String url, ImageView view)

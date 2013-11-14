@@ -1,69 +1,48 @@
 package com.qsoft.ondio.model;
 
+
 import android.content.ContentValues;
-import android.database.Cursor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.qsoft.ondio.data.dao.HomeContract;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Home
 {
+
     public String account_id;
-
-    public final String id;
-
-    public final String user_id;
-
-    public final String title;
-
-    public final String thumbnail;
-
-    public final String sound_path;
-
-    public final String description;
-
-    public final String duration;
-
-    public final String played;
-
-    public final String created_at;
-
-    public final String updated_at;
-
-    public final String likes;
-
-    public final String viewed;
-
-    public final String comments;
-
-    public final String username;
-
-    public final String display_name;
-
-    public final String avatar;
-
-
-    public Home(String account_id, String id, String user_id, String title, String thumbnail, String sound_path, String description
-            , String duration, String played, String created_at, String updated_at, String likes, String viewed
-            , String comments, String username, String display_name, String avatar)
-    {
-        this.account_id = account_id;
-        this.id = id;
-        this.user_id = user_id;
-        this.title = title;
-        this.thumbnail = thumbnail;
-        this.sound_path = sound_path;
-        this.description = description;
-        this.duration = duration;
-        this.played = played;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.likes = likes;
-        this.viewed = viewed;
-        this.comments = comments;
-        this.username = username;
-        this.display_name = display_name;
-        this.avatar = avatar;
-    }
-
+    @JsonProperty("id")
+    public String id;
+    @JsonProperty("user_id")
+    public String user_id;
+    @JsonProperty("title")
+    public String title;
+    @JsonProperty("thumbnail")
+    public String thumbnail;
+    @JsonProperty("description")
+    public String description;
+    @JsonProperty("sound_path")
+    public String sound_path;
+    @JsonProperty("duration")
+    public String duration;
+    @JsonProperty("played")
+    public String played;
+    @JsonProperty("created_at")
+    public String created_at;
+    @JsonProperty("updated_at")
+    public String updated_at;
+    @JsonProperty("likes")
+    public String likes;
+    @JsonProperty("viewed")
+    public String viewed;
+    @JsonProperty("comments")
+    public String comments;
+    @JsonProperty("username")
+    public String username;
+    @JsonProperty("display_name")
+    public String display_name;
+    @JsonProperty("avatar")
+    public String avatar;
 
     public String getAccount_id()
     {
@@ -74,7 +53,6 @@ public class Home
     {
         this.account_id = account_id;
     }
-
 
     public String getId()
     {
@@ -159,7 +137,7 @@ public class Home
     public ContentValues getContentValues()
     {
         ContentValues values = new ContentValues();
-        values.put(HomeContract.ACCOUNT_ID,account_id);
+        values.put(HomeContract.ACCOUNT_ID, account_id);
         values.put(HomeContract.ID, id);
         values.put(HomeContract.USER_ID, user_id);
         values.put(HomeContract.TITLE, title);
@@ -177,31 +155,6 @@ public class Home
         values.put(HomeContract.DISPLAY_NAME, display_name);
         values.put(HomeContract.AVATAR, avatar);
         return values;
-    }
-
-    public static Home fromCursor(Cursor cursor)
-    {
-        String account_id = cursor.getString(cursor.getColumnIndex(HomeContract.ACCOUNT_ID));
-        String id = cursor.getString(cursor.getColumnIndex(HomeContract.ID));
-        String user_id = cursor.getString(cursor.getColumnIndex(HomeContract.USER_ID));
-        String title = cursor.getString(cursor.getColumnIndex(HomeContract.TITLE));
-        String thumbnail = cursor.getString(cursor.getColumnIndex(HomeContract.THUMBNAIL));
-        String sound_path = cursor.getString(cursor.getColumnIndex(HomeContract.SOUND_PATH));
-        String description = cursor.getString(cursor.getColumnIndex(HomeContract.DESCRIPTION));
-        String duration = cursor.getString(cursor.getColumnIndex(HomeContract.DURATION));
-        String played = cursor.getString(cursor.getColumnIndex(HomeContract.PLAYED));
-        String created_at = cursor.getString(cursor.getColumnIndex(HomeContract.CREATED_AT));
-        String updated_at = cursor.getString(cursor.getColumnIndex(HomeContract.UPDATED_AT));
-        String likes = cursor.getString(cursor.getColumnIndex(HomeContract.LIKES));
-        String viewed = cursor.getString(cursor.getColumnIndex(HomeContract.VIEWED));
-        String comments = cursor.getString(cursor.getColumnIndex(HomeContract.COMMENTS));
-        String username = cursor.getString(cursor.getColumnIndex(HomeContract.USERNAME));
-        String display_name = cursor.getString(cursor.getColumnIndex(HomeContract.DISPLAY_NAME));
-        String avatar = cursor.getString(cursor.getColumnIndex(HomeContract.AVATAR));
-
-        return new Home(account_id, id, user_id, title, thumbnail, sound_path, description
-                , duration, played, created_at, updated_at, likes, viewed
-                , comments, username, display_name, avatar);
     }
 
 }

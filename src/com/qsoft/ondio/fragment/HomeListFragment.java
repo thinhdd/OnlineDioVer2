@@ -1,13 +1,9 @@
 package com.qsoft.ondio.fragment;
 
 import android.content.ContentUris;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -16,13 +12,20 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.widget.ListView;
+import com.googlecode.androidannotations.annotations.Bean;
+import com.googlecode.androidannotations.annotations.EFragment;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.customui.ArrayAdapterCustom;
 import com.qsoft.ondio.data.dao.HomeContract;
+import com.qsoft.ondio.util.ShareInfoAccount;
 
+@EFragment
 public class HomeListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
     String account_id;
+    @Bean
+    ShareInfoAccount infoAccount;
+
     private static final String[] PROJECTION = new String[]{
             HomeContract.ACCOUNT_ID,
             HomeContract._ID,
@@ -52,18 +55,11 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
     };
     ArrayAdapterCustom mAdapter;
 
-    private String TAG = "HomeListFragment";
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
-        SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        account_id = setting.getString("user_id", "n/a");
-        setEmptyText("No data");
-
-        // Create an empty adapter we will use to display the loaded data.
+        account_id = infoAccount.getUser_id();
         mAdapter = new ArrayAdapterCustom(
                 getActivity(),
                 R.layout.home_listfeeds,
@@ -80,6 +76,7 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
             }
         });
         setListAdapter(mAdapter);
+        setListShown(false);
         getLoaderManager().initLoader(0, null, this);
     }
 
@@ -88,8 +85,8 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
     {
         super.onListItemClick(l, v, position, id);
         final FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.content_frame, new ProgramFragment(), "ProgramFragment");
-        ft.addToBackStack("ProgramFragment");
+        ft.replace(R.id.content_frame, new ProgramFragment_(), "ProgramFragment_");
+        ft.addToBackStack("ProgramFragment_");
         ft.commit();
     }
 
@@ -105,12 +102,19 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
     public void onLoadFinished(Loader<Cursor> loader, Cursor data)
     {
         mAdapter.swapCursor(data);
+        if(isResumed()){
+            setListShown(true);
+        }
+        else{
+            setListShownNoAnimation(true);
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader)
     {
         mAdapter.swapCursor(null);
-
     }
+
+
 }
