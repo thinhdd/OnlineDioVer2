@@ -18,6 +18,8 @@ public class User implements Serializable
     private String expires;
     @JsonProperty("scope")
     private String scope;
+    @JsonProperty("scope")
+    private String error_message;
 
     public String getAccess_token()
     {

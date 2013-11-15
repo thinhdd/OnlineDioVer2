@@ -15,10 +15,8 @@ import com.googlecode.androidannotations.annotations.*;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.controller.LoginController;
 import com.qsoft.ondio.data.ParseComServerAccessor;
-import com.qsoft.ondio.dialog.MyDialog;
 import com.qsoft.ondio.model.User;
 import com.qsoft.ondio.util.Common;
-import com.qsoft.ondio.util.NetworkAvailable;
 import com.qsoft.ondio.util.ShareInfoAccount;
 
 @EActivity(R.layout.login)
@@ -102,7 +100,6 @@ public class LoginActivity extends AccountAuthenticatorActivity
                 data.putString(AccountManager.KEY_ACCOUNT_TYPE, Common.ARG_ACCOUNT_TYPE);
                 data.putString(AccountManager.KEY_AUTHTOKEN, user.getAccess_token());
 
-//                saveInfo(user.getAccess_token(), userName, user.getUser_id());
                 Log.d(TAG, "Show token" + user.getAccess_token());
                 Bundle userData = new Bundle();
                 userData.putString(Common.USERDATA_USER_OBJ_ID, user.getUser_id());
@@ -133,6 +130,7 @@ public class LoginActivity extends AccountAuthenticatorActivity
         }
         else
         {
+            Toast.makeText(getBaseContext(), "Login success ", Toast.LENGTH_SHORT).show();
             loginController.finishLogin(intent, mAuthTokenType);
         }
     }

@@ -30,8 +30,8 @@ public final class CommentFragment_
     }
 
     private void afterSetContentView_() {
-        lvComment = ((ListView) findViewById(com.qsoft.ondio.R.id.comment_lvListComment));
         tvInputComment = ((TextView) findViewById(com.qsoft.ondio.R.id.comments_tvInputComment));
+        lvComment = ((ListView) findViewById(com.qsoft.ondio.R.id.comment_lvListComment));
         {
             View view = findViewById(com.qsoft.ondio.R.id.comments_tvInputComment);
             if (view!= null) {

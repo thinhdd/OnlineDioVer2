@@ -5,11 +5,13 @@
 
 package com.qsoft.ondio.syncadapter;
 
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import com.qsoft.ondio.restservice.Interceptor_;
 import com.qsoft.ondio.restservice.Services_;
+import com.qsoft.ondio.util.ShareInfoAccount_;
 
 public final class SyncAdapter_
     extends SyncAdapter
@@ -28,6 +30,7 @@ public final class SyncAdapter_
             return ;
         }
         ((Interceptor_) interceptor).afterSetContentView_();
+        ((ShareInfoAccount_) infoAccount).afterSetContentView_();
     }
 
     /**
@@ -44,8 +47,10 @@ public final class SyncAdapter_
         if (context_ instanceof Activity) {
             Activity activity = ((Activity) context_);
         }
+        accountManager = ((AccountManager) context_.getSystemService(Context.ACCOUNT_SERVICE));
         services = new Services_();
         interceptor = Interceptor_.getInstance_(context_);
+        infoAccount = ShareInfoAccount_.getInstance_(context_);
         init();
     }
 

@@ -8,6 +8,7 @@ import com.googlecode.androidannotations.annotations.rest.Rest;
 import com.googlecode.androidannotations.api.rest.MediaType;
 import com.qsoft.ondio.model.Homes;
 import com.qsoft.ondio.model.Profile;
+import com.qsoft.ondio.model.ProfileResponse;
 import com.qsoft.ondio.model.User;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -37,6 +38,6 @@ public interface Services
 
     @Get("/user-rest/{account_id}")
     @Accept(MediaType.APPLICATION_JSON)
-    Profile getProfile(String account_id);
+    ProfileResponse getProfile(String account_id);
 
 }

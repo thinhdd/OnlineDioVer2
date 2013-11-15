@@ -4,22 +4,18 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
 import com.googlecode.androidannotations.annotations.*;
+import com.googlecode.androidannotations.annotations.rest.RestService;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.activity.SlidebarActivity;
 import com.qsoft.ondio.cache.Image;
@@ -29,12 +25,15 @@ import com.qsoft.ondio.data.dao.ProfileContract;
 import com.qsoft.ondio.dialog.MyDialog;
 import com.qsoft.ondio.model.Profile;
 import com.qsoft.ondio.model.ProfileResponse;
+import com.qsoft.ondio.restservice.Interceptor;
+import com.qsoft.ondio.restservice.Services;
 import com.qsoft.ondio.util.Common;
 import com.qsoft.ondio.util.ShareInfoAccount;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 @EFragment(R.layout.profile)
 public class ProfileFragment extends Fragment
 {
@@ -80,6 +79,15 @@ public class ProfileFragment extends Fragment
 
     @Bean
     ShareInfoAccount infoAccount;
+
+    @Bean
+    Interceptor interceptor;
+
+    @RestService
+    Services services;
+
+    @Bean
+    ParseComServerAccessor parseCom;
 
     private Account account;
 
@@ -374,8 +382,7 @@ public class ProfileFragment extends Fragment
     public void getDataToLocalDB()
     {
         token = mAccountManager.peekAuthToken(account, Common.AUTHTOKEN_TYPE_FULL_ACCESS);
-        ParseComServerAccessor parseComServerAccessor = new ParseComServerAccessor();
-        Profile profile = parseComServerAccessor.getShowsProfile(account, mAccountManager, token, user_id);
+        Profile profile = parseCom.getShowsProfile();
         doSaveProfileToDB(profile);
     }
 

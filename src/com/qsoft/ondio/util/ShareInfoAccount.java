@@ -2,9 +2,7 @@ package com.qsoft.ondio.util;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.content.Context;
 import com.googlecode.androidannotations.annotations.EBean;
-import com.googlecode.androidannotations.annotations.RootContext;
 import com.googlecode.androidannotations.annotations.SystemService;
 import com.googlecode.androidannotations.api.Scope;
 
@@ -13,6 +11,7 @@ public class ShareInfoAccount
 {
     @SystemService
     AccountManager accountManager;
+
     private Account account;
 
     public Account getAccount()
@@ -33,5 +32,15 @@ public class ShareInfoAccount
         }
         else
             return null;
+    }
+
+    public String getPassword()
+    {
+        return accountManager.getPassword(account);
+    }
+
+    public void refreshTokenToSystem(String authToken)
+    {
+        accountManager.setAuthToken(account, Common.AUTHTOKEN_TYPE_FULL_ACCESS, authToken);
     }
 }

@@ -26,9 +26,9 @@ public final class ArrayAdapterListOption_
         if (!(context_ instanceof Activity)) {
             return ;
         }
-        tvSpec = ((TextView) findViewById(com.qsoft.ondio.R.id.slidebar_tvSpecOption));
-        ivOption = ((ImageView) findViewById(com.qsoft.ondio.R.id.slidebar_ivOption));
         tvOption = ((TextView) findViewById(com.qsoft.ondio.R.id.slidebar_tvOption));
+        ivOption = ((ImageView) findViewById(com.qsoft.ondio.R.id.slidebar_ivOption));
+        tvSpec = ((TextView) findViewById(com.qsoft.ondio.R.id.slidebar_tvSpecOption));
     }
 
     /**

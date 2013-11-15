@@ -31,8 +31,8 @@ public final class HomeFragment_
     }
 
     private void afterSetContentView_() {
-        btMenu = ((Button) findViewById(com.qsoft.ondio.R.id.home_btMenu));
         btNotifications = ((Button) findViewById(com.qsoft.ondio.R.id.home_btNotifications));
+        btMenu = ((Button) findViewById(com.qsoft.ondio.R.id.home_btMenu));
         {
             View view = findViewById(com.qsoft.ondio.R.id.home_btMenu);
             if (view!= null) {

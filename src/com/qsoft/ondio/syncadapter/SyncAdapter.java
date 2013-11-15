@@ -11,6 +11,7 @@ import android.util.Log;
 import com.googlecode.androidannotations.annotations.AfterInject;
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EBean;
+import com.googlecode.androidannotations.annotations.SystemService;
 import com.googlecode.androidannotations.annotations.rest.RestService;
 import com.qsoft.ondio.data.ParseComServerAccessor;
 import com.qsoft.ondio.data.dao.HomeContract;
@@ -18,6 +19,7 @@ import com.qsoft.ondio.model.Home;
 import com.qsoft.ondio.restservice.Interceptor;
 import com.qsoft.ondio.restservice.Services;
 import com.qsoft.ondio.util.Common;
+import com.qsoft.ondio.util.ShareInfoAccount;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 
 import java.text.ParseException;
@@ -34,6 +36,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
     @Bean
     Interceptor interceptor;
 
+    @Bean
+    ShareInfoAccount infoAccount;
+
+    @SystemService
+    AccountManager accountManager;
+
     @AfterInject
     public void init() {
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<ClientHttpRequestInterceptor>();
@@ -44,7 +52,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
     public static final String TAG = "SyncAdapter";
 
     private static final String FEED_URL = "http://113.160.50.84:1009/testing/ica467/trunk/public/home-rest";
-    private final AccountManager mAccountManager;
 
     private final ContentResolver mContentResolver;
 
@@ -52,8 +59,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
     {
         super(context, true);
         mContentResolver = context.getContentResolver();
-        mAccountManager = AccountManager.get(context);
-
     }
 
     @Override
@@ -85,9 +90,15 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
             Log.e(TAG, "Error updating database: " + e.toString());
             syncResult.databaseError = true;
             return;
+        }catch (Exception e)
+        {
+            Log.e(TAG, "Error updating database: " + e.toString());
+            syncResult.databaseError = true;
+            return;
         }
-        Log.i(TAG, "Network synchronization complete");
+
     }
+
 
     public void updateLocalFeedData(Account account, final SyncResult syncResult)
             throws RemoteException,
@@ -102,7 +113,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
     private void doSyncHome(Account account, SyncResult syncResult) throws RemoteException, OperationApplicationException
     {
         final ContentResolver contentResolver = getContext().getContentResolver();
-        String account_id = mAccountManager.getUserData(account, Common.USERDATA_USER_OBJ_ID);
+        String account_id = infoAccount.getUser_id();
         final ArrayList<Home> entries = services.getShowsFeedHome().getHomeList();
         Log.i(TAG, "Parsing complete. Found " + entries.size() + " entries");
 

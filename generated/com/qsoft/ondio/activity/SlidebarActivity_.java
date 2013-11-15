@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import com.googlecode.androidannotations.api.SdkVersionHelper;
 import com.qsoft.ondio.R.layout;
 import com.qsoft.ondio.customui.ArrayAdapterListOption_;
+import com.qsoft.ondio.util.ShareInfoAccount_;
 
 public final class SlidebarActivity_
     extends SlidebarActivity
@@ -37,6 +38,7 @@ public final class SlidebarActivity_
 
     private void init_(Bundle savedInstanceState) {
         mAccountManager = ((AccountManager) this.getSystemService(Context.ACCOUNT_SERVICE));
+        shareInfoAccount = ShareInfoAccount_.getInstance_(this);
         listOption = ArrayAdapterListOption_.getInstance_(this);
     }
 
@@ -74,9 +76,10 @@ public final class SlidebarActivity_
                 );
             }
         }
+        ((ShareInfoAccount_) shareInfoAccount).afterSetContentView_();
         ((ArrayAdapterListOption_) listOption).afterSetContentView_();
-        bindAdapter();
         setUpView();
+        bindAdapter();
     }
 
     @Override

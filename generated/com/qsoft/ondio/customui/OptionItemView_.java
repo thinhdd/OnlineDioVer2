@@ -41,9 +41,9 @@ public final class OptionItemView_
     }
 
     private void afterSetContentView_() {
-        tvSpec = ((TextView) findViewById(id.slidebar_tvSpecOption));
-        ivOption = ((ImageView) findViewById(id.slidebar_ivOption));
         tvOption = ((TextView) findViewById(id.slidebar_tvOption));
+        ivOption = ((ImageView) findViewById(id.slidebar_ivOption));
+        tvSpec = ((TextView) findViewById(id.slidebar_tvSpecOption));
     }
 
     /**

@@ -18,6 +18,7 @@ import com.qsoft.ondio.customui.ArrayAdapterListOption;
 import com.qsoft.ondio.fragment.HomeFragment_;
 import com.qsoft.ondio.fragment.ProfileFragment_;
 import com.qsoft.ondio.util.Common;
+import com.qsoft.ondio.util.ShareInfoAccount;
 
 
 @EActivity(R.layout.slidebar)
@@ -32,6 +33,9 @@ public class SlidebarActivity extends FragmentActivity
     public RelativeLayout rlLeftDrawer;
     @Bean
     ArrayAdapterListOption listOption;
+
+    @Bean
+    ShareInfoAccount shareInfoAccount;
 
     @AfterViews
     void bindAdapter()
@@ -58,7 +62,7 @@ public class SlidebarActivity extends FragmentActivity
     {
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, new ProfileFragment_(), "ProfileFragment_");
-        ft.addToBackStack("ProfileFragment");
+        ft.addToBackStack("ProfileFragment_");
         ft.commit();
         setCloseListOption();
     }
@@ -113,6 +117,7 @@ public class SlidebarActivity extends FragmentActivity
         {
             mAccountManager.removeAccount(account, null, null);
         }
+        shareInfoAccount.setAccount(null);
         Intent intent = new Intent(getApplicationContext(), MainActivity_.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

@@ -6,8 +6,8 @@
 package com.qsoft.ondio.restservice;
 
 import java.util.Collections;
-import java.util.HashMap;
 import com.qsoft.ondio.model.Homes;
+import com.qsoft.ondio.model.ProfileResponse;
 import com.qsoft.ondio.model.User;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -43,10 +43,20 @@ public class Services_
     }
 
     @Override
-    public User signIn(HashMap nameValuePairs) {
+    public ProfileResponse getProfile(String account_id) {
+        java.util.HashMap<String, Object> urlVariables = new java.util.HashMap<String, Object>();
+        urlVariables.put("account_id", account_id);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/json")));
-        HttpEntity<HashMap> requestEntity = new HttpEntity<HashMap>(nameValuePairs, httpHeaders);
+        HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
+        return restTemplate.exchange(rootUrl.concat("/user-rest/{account_id}"), HttpMethod.GET, requestEntity, ProfileResponse.class, urlVariables).getBody();
+    }
+
+    @Override
+    public User signIn(java.util.HashMap nameValuePairs) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/json")));
+        HttpEntity<java.util.HashMap> requestEntity = new HttpEntity<java.util.HashMap>(nameValuePairs, httpHeaders);
         return restTemplate.exchange(rootUrl.concat("/auth-rest"), HttpMethod.POST, requestEntity, User.class).getBody();
     }
 
