@@ -41,20 +41,20 @@ public final class LoginActivity_
 
     private void init_(Bundle savedInstanceState) {
         accountManager = ((AccountManager) this.getSystemService(Context.ACCOUNT_SERVICE));
-        loginController = LoginController_.getInstance_(this);
-        shareInfoAccount = ShareInfoAccount_.getInstance_(this);
         parseCom = ParseComServerAccessor_.getInstance_(this);
+        shareInfoAccount = ShareInfoAccount_.getInstance_(this);
+        loginController = LoginController_.getInstance_(this);
     }
 
     private void afterSetContentView_() {
-        etEmail = ((EditText) findViewById(id.login_etEmail));
-        btBack = ((Button) findViewById(id.login_btBack));
-        btLogin = ((Button) findViewById(id.login_btNext));
         tvForgotPassword = ((TextView) findViewById(id.login_tvForgotPassword));
         etPassword = ((EditText) findViewById(id.login_etPassword));
-        ((LoginController_) loginController).afterSetContentView_();
-        ((ShareInfoAccount_) shareInfoAccount).afterSetContentView_();
+        btBack = ((Button) findViewById(id.login_btBack));
+        etEmail = ((EditText) findViewById(id.login_etEmail));
+        btLogin = ((Button) findViewById(id.login_btNext));
         ((ParseComServerAccessor_) parseCom).afterSetContentView_();
+        ((ShareInfoAccount_) shareInfoAccount).afterSetContentView_();
+        ((LoginController_) loginController).afterSetContentView_();
         {
             final TextView view = ((TextView) findViewById(id.login_etEmail));
             if (view!= null) {

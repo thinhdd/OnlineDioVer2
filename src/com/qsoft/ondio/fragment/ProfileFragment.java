@@ -208,8 +208,7 @@ public class ProfileFragment extends Fragment
         String code = convertToCountryCode(name);
         profile.setCountry_id(code);
         profile.setDescription(etDescription.getText().toString());
-        ParseComServerAccessor parseComServerAccessor = new ParseComServerAccessor();
-        ProfileResponse profileResponse = parseComServerAccessor.updateProfile(account, mAccountManager, profile, token, user_id);
+        ProfileResponse profileResponse = parseCom.updateProfile(profile);
         if (profileResponse != null)
         {
             doSaveProfileToDB(profileResponse.getData());

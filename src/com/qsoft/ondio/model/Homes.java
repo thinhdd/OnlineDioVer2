@@ -11,18 +11,26 @@ import java.util.ArrayList;
  * Time: 2:04 PM
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Homes
-{
+public class Homes {
     @JsonProperty("data")
     ArrayList<Home> homeList;
 
-    public ArrayList<Home> getHomeList()
-    {
+    @JsonProperty("")
+    String error;
+
+    public ArrayList<Home> getHomeList() {
         return homeList;
     }
 
-    public void setHomeList(ArrayList<Home> homeList)
-    {
+    public void setHomeList(ArrayList<Home> homeList) {
         this.homeList = homeList;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 }
