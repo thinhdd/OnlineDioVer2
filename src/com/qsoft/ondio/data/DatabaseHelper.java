@@ -22,7 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                     HomeContract._ID +
                     " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     HomeContract.ACCOUNT_ID +" TEXT, " +
-                    HomeContract.ID + " TEXT, " +
+                    HomeContract.FEED_ID + " TEXT, " +
                     HomeContract.USER_ID + " TEXT, " +
                     HomeContract.TITLE + " TEXT, " +
                     HomeContract.THUMBNAIL + " TEXT," +

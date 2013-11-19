@@ -16,7 +16,7 @@ import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.customui.ArrayAdapterCustom;
-import com.qsoft.ondio.data.dao.HomeContract;
+import com.qsoft.ondio.model.orm.FeedContract;
 import com.qsoft.ondio.util.ShareInfoAccount;
 
 @EFragment
@@ -27,23 +27,23 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
     ShareInfoAccount infoAccount;
 
     private static final String[] PROJECTION = new String[]{
-            HomeContract.ACCOUNT_ID,
-            HomeContract._ID,
-            HomeContract.USER_ID,
-            HomeContract.TITLE,
-            HomeContract.DISPLAY_NAME,
-            HomeContract.UPDATED_AT,
-            HomeContract.LIKES,
-            HomeContract.COMMENTS,
-            HomeContract.AVATAR
+            FeedContract.ACCOUNT_ID,
+            FeedContract._ID,
+            FeedContract.USER_ID,
+            FeedContract.TITLE,
+            FeedContract.DISPLAY_NAME,
+            FeedContract.UPDATED_AT,
+            FeedContract.LIKES,
+            FeedContract.COMMENTS,
+            FeedContract.AVATAR
     };
 
     private static final String[] FROM_COLUMNS = new String[]{
-            HomeContract.TITLE,
-            HomeContract.DISPLAY_NAME,
-            HomeContract.LIKES,
-            HomeContract.COMMENTS,
-            HomeContract.AVATAR,
+            FeedContract.TITLE,
+            FeedContract.DISPLAY_NAME,
+            FeedContract.LIKES,
+            FeedContract.COMMENTS,
+            FeedContract.AVATAR,
     };
 
     private static final int[] TO_FIELDS = new int[]{
@@ -93,9 +93,10 @@ public class HomeListFragment extends ListFragment implements LoaderManager.Load
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
-        Uri uri = ContentUris.withAppendedId(HomeContract.CONTENT_URI, Long.parseLong(account_id));
-        return new CursorLoader(getActivity(), uri,
-                PROJECTION, null, null, null);
+        String selection = FeedContract.ACCOUNT_ID+" = ? ";
+        String[] selectionArgs = new String[]{account_id};
+        return new CursorLoader(getActivity(), FeedContract.CONTENT_URI,
+                PROJECTION, selection, selectionArgs, null);
     }
 
     @Override

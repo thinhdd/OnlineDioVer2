@@ -2,6 +2,7 @@ package com.qsoft.ondio.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.qsoft.ondio.model.orm.Feed;
 
 import java.util.ArrayList;
 
@@ -13,16 +14,16 @@ import java.util.ArrayList;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Homes {
     @JsonProperty("data")
-    ArrayList<Home> homeList;
+    ArrayList<Feed> homeList;
 
     @JsonProperty("")
     String error;
 
-    public ArrayList<Home> getHomeList() {
+    public ArrayList<Feed> getHomeList() {
         return homeList;
     }
 
-    public void setHomeList(ArrayList<Home> homeList) {
+    public void setHomeList(ArrayList<Feed> homeList) {
         this.homeList = homeList;
     }
 

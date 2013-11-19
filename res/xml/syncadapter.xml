@@ -16,7 +16,7 @@ limitations under the License.
 -->
 
 <sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
-              android:contentAuthority="com.qsoft.onlinedio"
+              android:contentAuthority="com.qsoft.onlinedio.orm"
               android:accountType="com.qsoft.onlinedio"
               android:userVisible="true"
               android:supportsUploading="false"

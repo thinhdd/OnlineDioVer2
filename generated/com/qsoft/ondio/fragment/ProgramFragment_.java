@@ -30,8 +30,23 @@ public final class ProgramFragment_
     }
 
     private void afterSetContentView_() {
-        btBack = ((Button) findViewById(com.qsoft.ondio.R.id.program_btBack));
         rgInfo = ((RadioGroup) findViewById(com.qsoft.ondio.R.id.program_rgSelectInfo));
+        btBack = ((Button) findViewById(com.qsoft.ondio.R.id.program_btBack));
+        {
+            View view = findViewById(com.qsoft.ondio.R.id.program_btBack);
+            if (view!= null) {
+                view.setOnClickListener(new OnClickListener() {
+
+
+                    @Override
+                    public void onClick(View view) {
+                        ProgramFragment_.this.doExecuteEvent(view);
+                    }
+
+                }
+                );
+            }
+        }
         {
             View view = findViewById(com.qsoft.ondio.R.id.program_rbThumbnail);
             if (view!= null) {
@@ -71,21 +86,6 @@ public final class ProgramFragment_
                     @Override
                     public void onClick(View view) {
                         ProgramFragment_.this.doShowSubFragmentInfo(view);
-                    }
-
-                }
-                );
-            }
-        }
-        {
-            View view = findViewById(com.qsoft.ondio.R.id.program_btBack);
-            if (view!= null) {
-                view.setOnClickListener(new OnClickListener() {
-
-
-                    @Override
-                    public void onClick(View view) {
-                        ProgramFragment_.this.doExecuteEvent(view);
                     }
 
                 }

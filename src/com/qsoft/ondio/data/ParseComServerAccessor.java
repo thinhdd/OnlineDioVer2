@@ -1,6 +1,7 @@
 package com.qsoft.ondio.data;
 
 import android.accounts.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.googlecode.androidannotations.annotations.AfterInject;
@@ -13,6 +14,7 @@ import com.qsoft.ondio.model.ProfileResponse;
 import com.qsoft.ondio.model.User;
 import com.qsoft.ondio.restservice.Interceptor;
 import com.qsoft.ondio.restservice.Services;
+import com.qsoft.ondio.restservice.Servicess;
 import com.qsoft.ondio.util.Common;
 import com.qsoft.ondio.util.HashStringToMD5;
 import com.qsoft.ondio.util.ShareInfoAccount;
@@ -23,6 +25,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +85,7 @@ public class ParseComServerAccessor {
         {
             refreshToken();
         }
-        return null;
+        return services.getProfile(infoAccount.getUser_id()).getData();
     }
 
     private String refreshToken() {

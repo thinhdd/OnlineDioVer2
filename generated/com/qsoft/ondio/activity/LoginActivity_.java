@@ -47,11 +47,11 @@ public final class LoginActivity_
     }
 
     private void afterSetContentView_() {
-        tvForgotPassword = ((TextView) findViewById(id.login_tvForgotPassword));
-        etPassword = ((EditText) findViewById(id.login_etPassword));
-        btBack = ((Button) findViewById(id.login_btBack));
         etEmail = ((EditText) findViewById(id.login_etEmail));
+        btBack = ((Button) findViewById(id.login_btBack));
+        etPassword = ((EditText) findViewById(id.login_etPassword));
         btLogin = ((Button) findViewById(id.login_btNext));
+        tvForgotPassword = ((TextView) findViewById(id.login_tvForgotPassword));
         ((ParseComServerAccessor_) parseCom).afterSetContentView_();
         ((ShareInfoAccount_) shareInfoAccount).afterSetContentView_();
         ((LoginController_) loginController).afterSetContentView_();

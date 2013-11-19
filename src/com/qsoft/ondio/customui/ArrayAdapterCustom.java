@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.cache.Image;
-import com.qsoft.ondio.data.dao.HomeContract;
+import com.qsoft.ondio.model.orm.FeedContract;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,13 +36,13 @@ public class ArrayAdapterCustom extends SimpleCursorAdapter
     {
         super.bindView(view, context, cursor);
         setUpViewFindByID(view);
-        home_tvFeed.setText(cursor.getString(cursor.getColumnIndex(HomeContract.TITLE)));
-        home_tvUserName.setText(cursor.getString(cursor.getColumnIndex(HomeContract.DISPLAY_NAME)));
-        home_tvLike.setText("likes " + cursor.getString(cursor.getColumnIndex(HomeContract.LIKES)));
-        home_tvComment.setText("comments " + cursor.getString(cursor.getColumnIndex(HomeContract.COMMENTS)));
-        long day = numberOfDay(cursor.getString(cursor.getColumnIndex(HomeContract.UPDATED_AT)));
+        home_tvFeed.setText(cursor.getString(cursor.getColumnIndex(FeedContract.TITLE)));
+        home_tvUserName.setText(cursor.getString(cursor.getColumnIndex(FeedContract.DISPLAY_NAME)));
+        home_tvLike.setText("likes " + cursor.getString(cursor.getColumnIndex(FeedContract.LIKES)));
+        home_tvComment.setText("comments " + cursor.getString(cursor.getColumnIndex(FeedContract.COMMENTS)));
+        long day = numberOfDay(cursor.getString(cursor.getColumnIndex(FeedContract.UPDATED_AT)));
         home_tvDays.setText("day " + day);
-        String url = cursor.getString(cursor.getColumnIndex(HomeContract.AVATAR));
+        String url = cursor.getString(cursor.getColumnIndex(FeedContract.AVATAR));
         imageLoader.DisplayImage(url, home_ivAvatar);
     }
 

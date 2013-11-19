@@ -10,7 +10,7 @@ import android.widget.Button;
 import com.googlecode.androidannotations.annotations.*;
 import com.qsoft.ondio.R;
 import com.qsoft.ondio.activity.SlidebarActivity;
-import com.qsoft.ondio.data.dao.HomeContract;
+import com.qsoft.ondio.model.orm.FeedContract;
 import com.qsoft.ondio.util.Common;
 import com.qsoft.ondio.util.ShareInfoAccount;
 
@@ -62,11 +62,11 @@ public class HomeFragment extends Fragment
     {
         Account account = shareInfoAccount.getAccount();
         Bundle bundle = new Bundle();
-        ContentResolver.setIsSyncable(account, Common.CONTENT_AUTHORITY, 1);
+        ContentResolver.setIsSyncable(account, FeedContract.AUTHORITY, 1);
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true); // Performing a sync no matter if it's off
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true); // Performing a sync no matter if it's off
         bundle.putString(Common.TYPE_SYNC, TAG);
-        ContentResolver.requestSync(account, HomeContract.AUTHORITY, bundle);
+        ContentResolver.requestSync(account, FeedContract.AUTHORITY, bundle);
     }
 
     private void showMenu()

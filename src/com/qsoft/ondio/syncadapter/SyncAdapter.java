@@ -13,9 +13,8 @@ import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.SystemService;
 import com.googlecode.androidannotations.annotations.rest.RestService;
-import com.qsoft.ondio.data.ParseComServerAccessor;
-import com.qsoft.ondio.data.dao.HomeContract;
-import com.qsoft.ondio.model.Home;
+import com.qsoft.ondio.model.orm.Feed;
+import com.qsoft.ondio.model.orm.FeedContract;
 import com.qsoft.ondio.restservice.Interceptor;
 import com.qsoft.ondio.restservice.Services;
 import com.qsoft.ondio.util.Common;
@@ -71,63 +70,61 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
         try
         {
             Log.i(TAG, "Streaming data from network: " + FEED_URL);
-            updateLocalFeedData(account, syncResult);
+            updateLocalFeedData(provider,syncResult);
         }
         catch (ParseException e)
         {
             Log.e(TAG, "Error parsing feed: " + e.toString());
             syncResult.stats.numParseExceptions++;
-            return;
         }
         catch (RemoteException e)
         {
             Log.e(TAG, "Error updating database: " + e.toString());
             syncResult.databaseError = true;
-            return;
         }
         catch (OperationApplicationException e)
         {
             Log.e(TAG, "Error updating database: " + e.toString());
             syncResult.databaseError = true;
-            return;
         }catch (Exception e)
         {
             Log.e(TAG, "Error updating database: " + e.toString());
             syncResult.databaseError = true;
-            return;
         }
 
     }
 
 
-    public void updateLocalFeedData(Account account, final SyncResult syncResult)
+    public void updateLocalFeedData(ContentProviderClient provider, final SyncResult syncResult)
             throws RemoteException,
             OperationApplicationException, ParseException
     {
-        doSyncHome(account, syncResult);
-        mContentResolver.notifyChange(HomeContract.CONTENT_URI, null, false);
+        doSyncHome(syncResult, provider);
+        mContentResolver.notifyChange(FeedContract.CONTENT_URI, null, false);
 
     }
 
 
-    private void doSyncHome(Account account, SyncResult syncResult) throws RemoteException, OperationApplicationException
+    private void doSyncHome(SyncResult syncResult, ContentProviderClient provider) throws RemoteException, OperationApplicationException
     {
         final ContentResolver contentResolver = getContext().getContentResolver();
+        ContentProviderClient contentProviderClient = getContext().getContentResolver().acquireContentProviderClient(FeedContract.CONTENT_URI);
         String account_id = infoAccount.getUser_id();
-        final ArrayList<Home> entries = services.getShowsFeedHome().getHomeList();
+        final ArrayList<Feed> entries = services.getShowsFeedHome().getHomeList();
         Log.i(TAG, "Parsing complete. Found " + entries.size() + " entries");
 
 
         ArrayList<ContentProviderOperation> batch = new ArrayList<ContentProviderOperation>();
-        HashMap<String, Home> entryMap = new HashMap<String, Home>();
-        for (Home e : entries)
+        HashMap<String, Feed> entryMap = new HashMap<String, Feed>();
+        for (Feed e : entries)
         {
             e.setAccount_id(account_id);
-            entryMap.put(e.getId(), e);
+            entryMap.put(e.getFeed_id(), e);
         }
         Log.i(TAG, "Fetching local entries for merge");
-        Uri uri = ContentUris.withAppendedId(HomeContract.CONTENT_URI, Long.parseLong(account_id));
-        Cursor c = contentResolver.query(uri, null
+//        Uri uri = ContentUris.withAppendedId(HomeContract.CONTENT_URI, Long.parseLong(account_id));
+        Uri uri1 = FeedContract.CONTENT_URI;
+        Cursor c = contentProviderClient.query(uri1, null
                 , null, null, null);
         Log.i(TAG, "Found " + c.getCount() + " local entries. Computing merge solution...");
 
@@ -143,17 +140,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
             do
             {
                 syncResult.stats.numEntries++;
-                _id = c.getInt(Common.COLUMN_ID);
-                id = c.getString(Common.COLUMN_FEED_ID);
-                played = c.getString(Common.COLUMN_PLAYED);
-                updated_at = c.getString(Common.COLUMN_UPDATED_AT);
-                likes = c.getString(Common.COLUMN_LIKES);
-                comments = c.getString(Common.COLUMN_COMMENTS);
-                Home match = entryMap.get(id);
+                _id = c.getInt(c.getColumnIndex(FeedContract._ID));
+                id = c.getString(c.getColumnIndex(FeedContract.FEED_ID));
+                played = c.getString(c.getColumnIndex(FeedContract.PLAYED));
+                updated_at = c.getString(c.getColumnIndex(FeedContract.UPDATED_AT));
+                likes = c.getString(c.getColumnIndex(FeedContract.LIKES));
+                comments = c.getString(c.getColumnIndex(FeedContract.COMMENTS));
+                Feed match = entryMap.get(id);
                 if (match != null)
                 {
                     entryMap.remove(id);
-                    Uri existingUri = HomeContract.CONTENT_URI.buildUpon()
+                    Uri existingUri = FeedContract.CONTENT_URI.buildUpon()
                             .appendPath(Integer.toString(_id)).build();
                     if ((match.updated_at != null && !match.updated_at
                             .equals(updated_at))
@@ -175,7 +172,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
                 else
                 {
                     // Entry doesn't exist. Remove it from the database.
-                    Uri deleteUri = HomeContract.CONTENT_URI.buildUpon()
+                    Uri deleteUri = FeedContract.CONTENT_URI.buildUpon()
                             .appendPath(Integer.toString(_id)).build();
                     Log.i(TAG, "Scheduling delete: " + deleteUri);
                     batch.add(ContentProviderOperation.newDelete(deleteUri).build());
@@ -186,14 +183,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
         c.close();
 
         // Add new items
-        for (Home e : entryMap.values())
+        for (Feed e : entryMap.values())
         {
-            batch.add(ContentProviderOperation.newInsert(HomeContract.CONTENT_URI)
+            batch.add(ContentProviderOperation.newInsert(FeedContract.CONTENT_URI)
                     .withValues(e.getContentValues())
                     .build());
             syncResult.stats.numInserts++;
         }
         Log.i(TAG, "Merge solution ready. Applying batch update");
-        mContentResolver.applyBatch(HomeContract.AUTHORITY, batch);
+        mContentResolver.applyBatch(FeedContract.AUTHORITY, batch);
     }
 }

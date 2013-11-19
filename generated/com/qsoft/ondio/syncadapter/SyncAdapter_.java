@@ -29,8 +29,8 @@ public final class SyncAdapter_
         if (!(context_ instanceof Activity)) {
             return ;
         }
-        ((Interceptor_) interceptor).afterSetContentView_();
         ((ShareInfoAccount_) infoAccount).afterSetContentView_();
+        ((Interceptor_) interceptor).afterSetContentView_();
     }
 
     /**
@@ -49,8 +49,8 @@ public final class SyncAdapter_
         }
         accountManager = ((AccountManager) context_.getSystemService(Context.ACCOUNT_SERVICE));
         services = new Services_();
-        interceptor = Interceptor_.getInstance_(context_);
         infoAccount = ShareInfoAccount_.getInstance_(context_);
+        interceptor = Interceptor_.getInstance_(context_);
         init();
     }
 

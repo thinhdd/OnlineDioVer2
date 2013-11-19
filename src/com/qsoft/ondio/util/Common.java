@@ -6,7 +6,7 @@ import com.qsoft.ondio.accountmanager.ServerAuthenticate;
 
 public class Common
 {
-    public final static String CONTENT_AUTHORITY = "com.qsoft.onlinedio";
+    public final static String CONTENT_AUTHORITY = "com.qsoft.onlinedio.orm";
     // Constants representing column positions from PROJECTION.
     public static final int COLUMN_ID = 0;
     public static String TYPE_SYNC = "TYPE_SYNC";

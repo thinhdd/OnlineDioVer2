@@ -31,8 +31,8 @@ public final class ProfileFragment_
     private void init_(Bundle savedInstanceState) {
         mAccountManager = ((AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE));
         services = new Services_();
-        infoAccount = ShareInfoAccount_.getInstance_(getActivity());
         interceptor = Interceptor_.getInstance_(getActivity());
+        infoAccount = ShareInfoAccount_.getInstance_(getActivity());
         parseCom = ParseComServerAccessor_.getInstance_(getActivity());
     }
 
@@ -43,22 +43,22 @@ public final class ProfileFragment_
     }
 
     private void afterSetContentView_() {
-        scroll = ((ScrollView) findViewById(com.qsoft.ondio.R.id.profile_svScroll));
-        etDescription = ((EditText) findViewById(com.qsoft.ondio.R.id.profile_etDescription));
-        btMale = ((Button) findViewById(com.qsoft.ondio.R.id.profile_btMale));
-        ivAvatar = ((ImageView) findViewById(com.qsoft.ondio.R.id.profile_ivAvatar));
-        etBirthday = ((EditText) findViewById(com.qsoft.ondio.R.id.profile_etBirthday));
-        etProfileName = ((EditText) findViewById(com.qsoft.ondio.R.id.profile_etProfileName));
-        etFullName = ((EditText) findViewById(com.qsoft.ondio.R.id.profile_etFullName));
         etPhoneNo = ((EditText) findViewById(com.qsoft.ondio.R.id.profile_etPhoneNo));
+        etFullName = ((EditText) findViewById(com.qsoft.ondio.R.id.profile_etFullName));
+        ivAvatar = ((ImageView) findViewById(com.qsoft.ondio.R.id.profile_ivAvatar));
         spCountry = ((Spinner) findViewById(com.qsoft.ondio.R.id.profile_spCountry));
-        btMenu = ((Button) findViewById(com.qsoft.ondio.R.id.profile_btMenu));
-        ivCoverImage = ((ImageView) findViewById(com.qsoft.ondio.R.id.profile_ivCoverImage));
-        btSave = ((Button) findViewById(com.qsoft.ondio.R.id.profile_btSave));
         btFemale = ((Button) findViewById(com.qsoft.ondio.R.id.profile_btFemale));
+        btMale = ((Button) findViewById(com.qsoft.ondio.R.id.profile_btMale));
+        btMenu = ((Button) findViewById(com.qsoft.ondio.R.id.profile_btMenu));
+        etDescription = ((EditText) findViewById(com.qsoft.ondio.R.id.profile_etDescription));
+        etBirthday = ((EditText) findViewById(com.qsoft.ondio.R.id.profile_etBirthday));
+        scroll = ((ScrollView) findViewById(com.qsoft.ondio.R.id.profile_svScroll));
         etCountry = ((EditText) findViewById(com.qsoft.ondio.R.id.profile_etCountry));
-        ((ShareInfoAccount_) infoAccount).afterSetContentView_();
+        btSave = ((Button) findViewById(com.qsoft.ondio.R.id.profile_btSave));
+        ivCoverImage = ((ImageView) findViewById(com.qsoft.ondio.R.id.profile_ivCoverImage));
+        etProfileName = ((EditText) findViewById(com.qsoft.ondio.R.id.profile_etProfileName));
         ((Interceptor_) interceptor).afterSetContentView_();
+        ((ShareInfoAccount_) infoAccount).afterSetContentView_();
         ((ParseComServerAccessor_) parseCom).afterSetContentView_();
         setUpProfileFragment();
     }

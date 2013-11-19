@@ -55,9 +55,13 @@
             <meta-data android:name="android.content.SyncAdapter"
                        android:resource="@xml/syncadapter"/>
         </service>
-        <provider android:authorities="com.qsoft.onlinedio"
-                  android:name=".data.dao.HomeContentProvider"
-                  android:label="@string/provider_name"
-                  android:exported="false"/>
+        <!--<provider android:authorities="com.qsoft.onlinedio"-->
+                  <!--android:name=".data.dao.HomeContentProvider"-->
+                  <!--android:label="@string/provider_name"-->
+                  <!--android:exported="false"/>-->
+        <provider android:authorities="com.qsoft.onlinedio.orm"
+                android:name=".data.dao.orm.CCContentProvider"
+                android:label="@string/provider_name1"
+                android:exported="false"/>
     </application>
 </manifest>

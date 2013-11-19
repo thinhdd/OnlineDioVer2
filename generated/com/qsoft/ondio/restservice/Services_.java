@@ -35,6 +35,14 @@ public class Services_
     }
 
     @Override
+    public Homes getShowsFeedHome() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/json")));
+        HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
+        return restTemplate.exchange(rootUrl.concat("/home-rest"), HttpMethod.GET, requestEntity, Homes.class).getBody();
+    }
+
+    @Override
     public ProfileResponse getProfile(String account_id) {
         java.util.HashMap<String, Object> urlVariables = new java.util.HashMap<String, Object>();
         urlVariables.put("account_id", account_id);
@@ -42,14 +50,6 @@ public class Services_
         httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/json")));
         HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
         return restTemplate.exchange(rootUrl.concat("/user-rest/{account_id}"), HttpMethod.GET, requestEntity, ProfileResponse.class, urlVariables).getBody();
-    }
-
-    @Override
-    public Homes getShowsFeedHome() {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/json")));
-        HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
-        return restTemplate.exchange(rootUrl.concat("/home-rest"), HttpMethod.GET, requestEntity, Homes.class).getBody();
     }
 
     @Override
